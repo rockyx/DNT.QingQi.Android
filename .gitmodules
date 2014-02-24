@@ -1,0 +1,3 @@
+[submodule "DNT.Diag"]
+	path = DNT.Diag
+	url = https://github.com/rockyx/DNT.Diag.git

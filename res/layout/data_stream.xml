@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp" >
+
+    <ScrollView
+        android:id="@+id/data_stream_scroll_view"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent" >
+    	<TableLayout
+	        android:id="@+id/data_stream_table"
+    	    android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:minHeight="25dp"
+        	android:minWidth="25dp"
+        	android:padding="5dp"
+        	android:shrinkColumns="*"
+        	android:stretchColumns="*" />
+        
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dnt.qingqi"
+    android:versionCode="8"
+    android:versionName="1.08" >
+
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="7" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    
+    <application
+        android:name="dnt.qingqi.App"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+        <receiver android:name="dnt.qingqi.BootCompleteReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="BootCompleteReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <activity 
+            android:icon="@drawable/logo" 
+            android:noHistory="true" 
+            android:theme="@style/Theme.Splash" 
+            android:name="dnt.qingqi.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="dnt.qingqi.MainActivity"
+            android:label="JiNan QingQi" 
+            android:theme="@style/Theme.Default" />
+        <activity
+            android:name="dnt.qingqi.DeviceInfoActivity"
+            android:label="Device Information"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.SelectTypesActivity"
+            android:label="Select Types"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.ModelFunctionsActivity"
+            android:label="Model Functions"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.ActiveTest2Activity"
+            android:label="Active Test"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.ActiveTestActivity"
+            android:label="Active Test"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.DataStreamActivity"
+            android:label="Data Stream"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.DataStreamSelectedActivity"
+            android:label="Select Data Stream"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.DetailDataStreamActivity"
+            android:label="Detail Data Stream Activity"
+            android:theme="@style/Theme.StaticDataStream" />
+        <activity 
+            android:name="dnt.qingqi.StaticDataStreamActivity"
+            android:label="Static Data Stream Activity"
+            android:theme="@style/Theme.StaticDataStream" />
+        <activity
+            android:name="dnt.qingqi.TroubleCodeMenuActivity"
+            android:label="Trouble Code"
+            android:theme="@style/Theme.Default" />
+        <activity 
+            android:name="dnt.qingqi.TroubleCodeResultActivity" 
+            android:label="Trouble Code"
+            android:theme="@style/Theme.Default" />
+        
+    </application>
+
+</manifest>

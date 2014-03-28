@@ -1,0 +1,21 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp" >
+
+    <Button
+        android:id="@+id/button_select_types"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_types" />
+
+    <Button
+        android:id="@+id/button_device_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/device_info"
+        android:layout_below="@id/button_select_types" />
+
+</RelativeLayout>

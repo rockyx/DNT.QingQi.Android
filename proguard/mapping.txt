@@ -1737,14 +1737,12 @@ dnt.diag.db.DBCrypto -> dnt.diag.e.b:
 dnt.diag.db.DatabaseException -> dnt.diag.e.c:
 dnt.diag.db.VehicleDB -> dnt.diag.e.d:
     char[] hexArray -> a
-    java.lang.String DB_PATH -> b
-    java.util.HashMap stringMap -> c
-    android.content.Context context -> d
-    android.database.sqlite.SQLiteDatabase db -> e
-    char[] hexChars -> f
-    java.lang.StringBuilder queryTextBuilder -> g
+    java.util.HashMap stringMap -> b
+    android.content.Context context -> c
+    android.database.sqlite.SQLiteDatabase db -> d
+    char[] hexChars -> e
+    java.lang.StringBuilder queryTextBuilder -> f
     void copyDatabase() -> a
-    void createDirectory() -> b
     java.lang.String bytesToHex(byte[]) -> a
     void convertBinaryToString(byte[]) -> b
     java.lang.String queryText(java.lang.String,java.lang.String) -> a

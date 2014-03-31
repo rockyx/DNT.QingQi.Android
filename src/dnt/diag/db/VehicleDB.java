@@ -18,9 +18,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public final class VehicleDB {
-	static final char[] hexArray="0123456789ABCDEF".toCharArray();
-	static final String DB_PATH = android.os.Environment
-			.getExternalStorageDirectory().getAbsolutePath() + "/QingQi/";
+	static final char[] hexArray = "0123456789ABCDEF".toCharArray();
 	static final String DB_NAME = "sys.db";
 	static HashMap<String, String> stringMap;
 
@@ -34,14 +32,16 @@ public final class VehicleDB {
 	}
 
 	private void copyDatabase() throws IOException {
-		createDirectory();
-
 		InputStream istream = null;
 		OutputStream ostream = null;
 		try {
 			AssetManager am = context.getAssets();
 			istream = am.open(DB_NAME);
-			ostream = new FileOutputStream(DB_PATH + DB_NAME);
+			SQLiteDatabase db = context.openOrCreateDatabase(DB_NAME,
+					Context.MODE_PRIVATE, null);
+			db.close();
+			File path = context.getDatabasePath(DB_NAME);
+			ostream = new FileOutputStream(path);
 			byte[] buffer = new byte[1024];
 			int length = 0;
 			while ((length = istream.read(buffer)) > 0) {
@@ -54,36 +54,23 @@ public final class VehicleDB {
 				if (ostream != null)
 					ostream.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
 			}
 		}
-	}
-
-	private void createDirectory() {
-		File file = new File(DB_PATH);
-		if (!file.exists())
-			file.mkdir();
-
-		file = new File(DB_PATH + DB_NAME);
-		if (file.exists())
-			file.delete();
 	}
 
 	public VehicleDB(Context context) throws IOException {
 		this.context = context;
 		copyDatabase();
 
-		db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null,
-				SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+		db = context.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 		if (db == null) {
-			throw new DatabaseException(DB_PATH + DB_NAME);
+			throw new DatabaseException(DB_NAME);
 		}
-		
+
 		queryTextBuilder = new StringBuilder(1024);
 		hexChars = new char[2048];
 	}
-	
+
 	private String bytesToHex(byte[] bytes) {
 		for (int i = 0; i < bytes.length; i++) {
 			int v = bytes[i] & 0xFF;

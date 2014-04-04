@@ -31,7 +31,6 @@ public class TroubleCodeResultActivity extends Activity {
 		@Override
 		protected String doInBackground(Void... params) {
 			try {
-				app.disconnectCommbox();
 				app.connectCommbox();
 				app.getECU().channelInit();
 				if (!isHistory) {
@@ -44,6 +43,11 @@ public class TroubleCodeResultActivity extends Activity {
 				return ex.getMessage();
 			} catch (IOException ex) {
 				return app.OpenCommboxFail;
+			} finally {
+				try {
+					app.disconnectCommbox();
+				} catch (IOException e) {
+				}
 			}
 		}
 
@@ -84,10 +88,10 @@ public class TroubleCodeResultActivity extends Activity {
 
 	private void showTroubleCode() {
 		if (troubleCodes == null || troubleCodes.size() == 0) {
-			listView.setAdapter(new ArrayAdapter<String>(this,
-					android.R.layout.simple_list_item_1,
-					new String[] { app.NoneTroubleCode }));
-			// app.showFatal(this, app.NoneTroubleCode, listener);
+//			listView.setAdapter(new ArrayAdapter<String>(this,
+//					android.R.layout.simple_list_item_1,
+//					new String[] { app.NoneTroubleCode }));
+			 app.showFatal(this, app.NoneTroubleCode, listener);
 		} else {
 			List<String> arrays = new ArrayList<String>();
 
@@ -113,6 +117,7 @@ public class TroubleCodeResultActivity extends Activity {
 
 	private void showResult(String result) {
 		app.hideStatus();
+		app.backMenu();
 		if (result == null) {
 			showTroubleCode();
 		} else {

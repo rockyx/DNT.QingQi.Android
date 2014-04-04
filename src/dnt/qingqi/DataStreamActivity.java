@@ -77,8 +77,6 @@ public class DataStreamActivity extends Activity {
 			@Override
 			protected String doInBackground(Void... params) {
 				try {
-
-					app.disconnectCommbox();
 					app.connectCommbox();
 
 					app.getECU().channelInit();
@@ -146,6 +144,11 @@ public class DataStreamActivity extends Activity {
 					try {
 						ds.stop();
 					} catch (ChannelException e) {
+					} finally {
+						try {
+							app.disconnectCommbox();
+						} catch (IOException e) {
+						}
 					}
 					return null;
 				}
@@ -153,6 +156,7 @@ public class DataStreamActivity extends Activity {
 				@Override
 				protected void onPostExecute(Void result) {
 					app.hideStatus();
+					app.backMenu();
 					DataStreamActivity.this.finish();
 				}
 

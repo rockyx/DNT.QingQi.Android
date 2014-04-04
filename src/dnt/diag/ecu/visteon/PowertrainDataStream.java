@@ -36,50 +36,84 @@ class PowertrainDataStream extends DataStreamFunction {
 
 		LiveDataItem item = lds.get("ECT");
 		item.setCalc(new LiveDataItemCalc(item) {
+			private byte buff = 0;
 
 			@Override
-			public String calc() {
-				int value = buffer.get(2) & 0xFF;
-				value -= 40;
+			protected String calc() {
+				int value = (buff & 0xFF) - 40;
 				return Integer.toString(value);
+			}
+
+			@Override
+			protected boolean dataChanged() {
+				if (buff != buffer.get(2)) {
+					buff = buffer.get(2);
+					return true;
+				}
+				return false;
 			}
 
 		});
 
 		item = lds.get("IMAP");
 		item.setCalc(new LiveDataItemCalc(item) {
+			private byte buff = 0;
 
 			@Override
-			public String calc() {
-				int value = buffer.get(2) & 0xFF;
-				value *= 3;
+			protected String calc() {
+				int value = (buff & 0xFF) * 3;
 				return Integer.toString(value);
+			}
+
+			@Override
+			protected boolean dataChanged() {
+				if (buff != buffer.get(2)) {
+					buff = buffer.get(2);
+					return true;
+				}
+				return false;
 			}
 		});
 
 		item = lds.get("ER");
 		item.setCalc(new LiveDataItemCalc(item) {
+			private byte[] buff = new byte[2];
 
 			@Override
-			public String calc() {
-				double value = buffer.get(2) & 0xFF;
-				value *= 256;
-				value += buffer.get(3) & 0xFF;
-				value *= 0.25;
+			protected String calc() {
+				double value = ((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF)) * 0.25;
 				return Double.toString(value);
+			}
+
+			@Override
+			protected boolean dataChanged() {
+				if ((buff[0] != buffer.get(2)) | (buff[1] != buffer.get(3))) {
+					buff[0] = buffer.get(2);
+					buff[1] = buffer.get(3);
+					return true;
+				}
+				return false;
 			}
 		});
 
 		item = lds.get("ITA#1");
 		if (item != null) {
 			item.setCalc(new LiveDataItemCalc(item) {
+				private byte buff = 0;
 
 				@Override
-				public String calc() {
-					double value = buffer.get(2) & 0xFF;
-					value /= 2;
-					value -= 64;
+				protected String calc() {
+					double value = (buff & 0xFF) / 2 - 64;
 					return Double.toString(value);
+				}
+
+				@Override
+				protected boolean dataChanged() {
+					if (buff != buffer.get(2)) {
+						buff = buffer.get(2);
+						return true;
+					}
+					return false;
 				}
 			});
 		}
@@ -87,25 +121,42 @@ class PowertrainDataStream extends DataStreamFunction {
 		item = lds.get("IAT");
 		if (item != null) {
 			item.setCalc(new LiveDataItemCalc(item) {
+				private byte buff = 0;
 
 				@Override
-				public String calc() {
-					int value = buffer.get(2) & 0xFF;
-					value -= 40;
+				protected String calc() {
+					int value = (buff & 0xFF) - 40;
 					return Integer.toString(value);
+				}
+
+				@Override
+				protected boolean dataChanged() {
+					if (buff != buffer.get(2)) {
+						buff = buffer.get(2);
+						return true;
+					}
+					return false;
 				}
 			});
 		}
 
 		item = lds.get("ATP");
 		item.setCalc(new LiveDataItemCalc(item) {
+			private byte buff = 0;
 
 			@Override
-			public String calc() {
-				double value = buffer.get(2) & 0xFF;
-				value *= 100;
-				value /= 255;
+			protected String calc() {
+				double value = (buff & 0xFF) * 100 / 255;
 				return Double.toString(value);
+			}
+
+			@Override
+			protected boolean dataChanged() {
+				if (buff != buffer.get(2)) {
+					buff = buffer.get(2);
+					return true;
+				}
+				return false;
 			}
 
 		});
@@ -113,11 +164,23 @@ class PowertrainDataStream extends DataStreamFunction {
 		item = lds.get("DTC");
 		if (item != null) {
 			item.setCalc(new LiveDataItemCalc(item) {
+				private byte[] buff = new byte[2];
 
 				@Override
-				public String calc() {
-					return TroubleCodeFunction.calcStdObdTroubleCode(
-							buffer.getBuff(), 0, 0, 3);
+				protected String calc() {
+					return TroubleCodeFunction.calcStdObdTroubleCode(buff, 0,
+							0, 0);
+				}
+
+				@Override
+				protected boolean dataChanged() {
+					if ((buff[0] != buffer.get(3))
+							|| (buff[1] != buffer.get(4))) {
+						buff[0] = buffer.get(3);
+						buff[1] = buffer.get(4);
+						return true;
+					}
+					return false;
 				}
 			});
 		}

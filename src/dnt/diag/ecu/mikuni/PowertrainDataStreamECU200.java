@@ -11,6 +11,33 @@ import dnt.diag.ecu.DiagException;
 
 class PowertrainDataStreamECU200 extends DataStreamFunction {
 
+	abstract class MyLiveDataItemCalc extends LiveDataItemCalc {
+
+		protected byte[] buff = new byte[16];
+
+		public MyLiveDataItemCalc(LiveDataItem item) {
+			super(item);
+		}
+
+		@Override
+		protected boolean dataChanged() {
+			int length = buffer.getLength();
+			if (buff.length == length) {
+				for (int i = 0; i < length; i++) {
+					if (buff[i] != buffer.get(i)) {
+						System.arraycopy(buffer.getBuff(), 0, buff, 0, length);
+						return true;
+					}
+				}
+			} else {
+				buff = new byte[length];
+				System.arraycopy(buffer.getBuff(), 0, buff, 0, length);
+				return true;
+			}
+			return false;
+		}
+	}
+
 	private PowertrainModel model;
 
 	public PowertrainDataStreamECU200(PowertrainECU200 ecu) {
@@ -59,15 +86,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 	protected void initCalcFunctions() {
 		LiveDataList lds = getLiveDataItems();
 		LiveDataItem item = lds.get("ER");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					int value = Integer.valueOf(cs.decode(bb).toString(), 16);
@@ -82,16 +111,18 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("BV");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -109,15 +140,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("TPS");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -134,15 +167,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("MAT");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -159,15 +194,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("ET");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -184,15 +221,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("BP");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -208,15 +247,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("MP");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -232,15 +273,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("IT");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -259,15 +302,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("IPW");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					double value = Integer
@@ -283,12 +328,13 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("TS");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
-					if ((buffer.get(0) & 0x40) != 0)
+					// if ((buffer.get(0) & 0x40) != 0)
+					if ((buff[0] & 0x40) != 0)
 						return PowertrainDataStreamECU200.this.getDB()
 								.queryText("Tilt", "System");
 					else
@@ -301,15 +347,17 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("ERF");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
 					bb.clear();
-					int length = buffer.getLength();
+					// int length = buffer.getLength();
+					int length = buff.length;
 					for (int i = 0; i < length; i++) {
-						bb.put(buffer.get(i));
+						// bb.put(buffer.get(i));
+						bb.put(buff[i]);
 					}
 					bb.flip();
 					int value = Integer.valueOf(cs.decode(bb).toString(), 16);
@@ -327,12 +375,13 @@ class PowertrainDataStreamECU200 extends DataStreamFunction {
 		});
 
 		item = lds.get("IS");
-		item.setCalc(new LiveDataItemCalc(item) {
+		item.setCalc(new MyLiveDataItemCalc(item) {
 
 			@Override
-			public String calc() {
+			protected String calc() {
 				try {
-					if ((buffer.get(0) & 0x40) != 0)
+					// if ((buffer.get(0) & 0x40) != 0)
+					if ((buff[0] & 0x40) != 0)
 						return PowertrainDataStreamECU200.this.getDB()
 								.queryText("Idle", "System");
 					else

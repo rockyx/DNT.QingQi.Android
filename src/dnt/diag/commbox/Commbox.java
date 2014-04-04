@@ -2,6 +2,7 @@ package dnt.diag.commbox;
 
 import java.io.IOException;
 import java.util.Random;
+
 import dnt.diag.Timer;
 import dnt.diag.Utils;
 import dnt.diag.io.SerialPort;
@@ -237,20 +238,27 @@ public final class Commbox {
 	private int timeExternDB; // expand time times
 	private byte[] port;
 	private byte[] buf;
-	private int pos;
+	private int bufPos;
 	private boolean isLink; // is heartbeat block
 	private int runFlag;
-	private int startPos;
+//	private int startPos;
 	private int boxVer;
 	private boolean isOpen;
 	private SerialPort serialPort;
 	private boolean isDB20;
 	private boolean isDoNow;
-	private Timer reqByteToByte;
-	private Timer reqWaitTime;
-	private Timer resByteToByte;
+//	private Timer reqByteToByte;
+//	private Timer reqWaitTime;
+//	private Timer resByteToByte;
 	private Timer resWaitTime;
 	private int buffId;
+	private byte[] sendCmdData;
+	private byte[] getCmdDataCS;
+	private byte[] doCmdData;
+	private byte[] initCheckBoxBuff;
+	Random initBoxRnd;
+	private byte[] ctrlWord;
+	private byte[] timeBuff;
 
 	public Commbox() {
 		timeUnit = 0;
@@ -258,20 +266,27 @@ public final class Commbox {
 		timeExternDB = 0;
 		port = new byte[MAXPORT_NUM];
 		buf = new byte[MAXBUFF_LEN];
-		pos = 0;
+		bufPos = 0;
 		isLink = false;
 		runFlag = 0;
-		startPos = 0;
+//		startPos = 0;
 		boxVer = 0;
 		isOpen = false;
 		serialPort = new SerialPort();
 		isDB20 = false;
 		isDoNow = true;
-		reqByteToByte = Timer.fromMilliseconds(0);
-		reqWaitTime = Timer.fromMilliseconds(0);
-		resByteToByte = Timer.fromMilliseconds(0);
+//		reqByteToByte = Timer.fromMilliseconds(0);
+//		reqWaitTime = Timer.fromMilliseconds(0);
+//		resByteToByte = Timer.fromMilliseconds(0);
 		resWaitTime = Timer.fromMilliseconds(0);
 		buffId = 0;
+		sendCmdData = new byte[256];
+		getCmdDataCS = new byte[1];
+		doCmdData = new byte[256];
+		initCheckBoxBuff = new byte[32];
+		initBoxRnd = new Random();
+		ctrlWord = new byte[3];
+		timeBuff = new byte[2];
 	}
 
 	public void setBuffId(int id) {
@@ -281,13 +296,13 @@ public final class Commbox {
 	private void getLinkTime(int type, Timer time) {
 		switch (type) {
 		case SETBYTETIME:
-			reqByteToByte = time;
+//			reqByteToByte = time;
 			break;
 		case SETWAITTIME:
-			reqWaitTime = time;
+//			reqWaitTime = time;
 			break;
 		case SETRECBBOUT:
-			resByteToByte = time;
+//			resByteToByte = time;
 			break;
 		case SETRECFROUT:
 			resWaitTime = time;
@@ -313,22 +328,24 @@ public final class Commbox {
 
 	private boolean sendCmd(int cmd, byte[] buffer, int offset, int count) {
 		int cs = cmd;
-		byte[] data = new byte[count + 2];
+		int pos = 0;
+//		byte[] sendCmdData = new byte[count + 2];
 
-		data[0] = Utils.loByte(cmd + runFlag);
+		sendCmdData[pos++] = Utils.loByte(cmd + runFlag);
 		if (buffer != null) {
 			for (int i = 0; i < count; i++) {
 				cs += buffer[offset + i];
 			}
-			System.arraycopy(buffer, offset, data, 1, count);
+			System.arraycopy(buffer, offset, sendCmdData, pos, count);
+			pos += count;
 		}
 
-		data[data.length - 1] = Utils.loByte(cs);
+		sendCmdData[pos++] = Utils.loByte(cs);
 
 		for (int i = 0; i < 3; i++) {
 			try {
 				checkIdle();
-				serialPort.write(data);
+				serialPort.write(sendCmdData, 0, pos);
 			} catch (CommboxException e) {
 				continue;
 			} catch (IOException e) {
@@ -341,6 +358,7 @@ public final class Commbox {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean sendCmd(int cmd, byte... buffer) {
 		return sendCmd(cmd, buffer, 0, buffer.length);
 	}
@@ -364,16 +382,16 @@ public final class Commbox {
 		}
 		if (recvBytes(buff, 0, len) != len)
 			return false;
-		byte[] cs = new byte[1];
-		cs[0] = 0;
-		if (recvBytes(cs, 0, 1) != 1)
+		
+		getCmdDataCS[0] = 0;
+		if (recvBytes(getCmdDataCS, 0, 1) != 1)
 			return false;
 		return len > 0;
 	}
 
 	private boolean doCmd(int cmd, byte[] buffer, int offset, int count) {
-		byte[] tmp = null;
-		startPos = 0;
+//		startPos = 0;
+		int pos = 0;
 		if (cmd != WR_DATA && cmd != SEND_DATA)
 			cmd |= count; // 加上长度位
 		if (isDoNow) {
@@ -382,24 +400,26 @@ public final class Commbox {
 			case WR_DATA:
 				if (count == 0)
 					return false;
-				tmp = new byte[2 + count];
+//				doCmdData = new byte[2 + count];
 				if (isLink)
-					tmp[0] = Utils.loByte(0xFF); // 写链路保持
+					doCmdData[pos++] = Utils.loByte(0xFF); // 写链路保持
 				else
-					tmp[1] = 0x00; // 写通讯命令
-				tmp[1] = Utils.loByte(count);
-				System.arraycopy(buffer, offset, tmp, 2, count);
-				return sendCmd(WR_DATA, tmp);
+					doCmdData[pos++] = 0x00; // 写通讯命令
+				doCmdData[pos++] = Utils.loByte(count);
+				System.arraycopy(buffer, offset, doCmdData, pos, count);
+				pos += count;
+				return sendCmd(WR_DATA, doCmdData, 0, pos);
 			case SEND_DATA:
 				if (count == 0)
 					return false;
-				tmp = new byte[4 + count];
-				tmp[0] = 0; // 写入位置
-				tmp[1] = Utils.loByte(count + 2); // 数据包长度
-				tmp[2] = Utils.loByte(SEND_DATA); // 命令
-				tmp[3] = Utils.loByte(count - 1); // 命令长度-1
-				System.arraycopy(buffer, offset, tmp, 4, count);
-				if (!sendCmd(WR_DATA, tmp))
+//				doCmdData = new byte[4 + count];
+				doCmdData[pos++] = 0; // 写入位置
+				doCmdData[pos++] = Utils.loByte(count + 2); // 数据包长度
+				doCmdData[pos++] = Utils.loByte(SEND_DATA); // 命令
+				doCmdData[pos++] = Utils.loByte(count - 1); // 命令长度-1
+				System.arraycopy(buffer, offset, doCmdData, pos, count);
+				pos += count;
+				if (!sendCmd(WR_DATA, doCmdData, 0, pos))
 					return false;
 
 				return sendCmd(DO_BAT_C);
@@ -408,13 +428,13 @@ public final class Commbox {
 			}
 		} else {
 			// 写命令到缓冲区
-			buf[pos++] = Utils.loByte(cmd);
+			buf[bufPos++] = Utils.loByte(cmd);
 			if (cmd == SEND_DATA)
-				buf[pos++] = Utils.loByte(count - 1);
-			startPos = pos;
+				buf[bufPos++] = Utils.loByte(count - 1);
+//			startPos = pos;
 			if (count > 0) {
-				System.arraycopy(buffer, offset, buf, pos, count);
-				pos += count;
+				System.arraycopy(buffer, offset, buf, bufPos, count);
+				bufPos += count;
 			}
 			return true;
 		}
@@ -447,52 +467,49 @@ public final class Commbox {
 	private boolean initBox() {
 		isDoNow = true;
 
-		byte[] buff = new byte[32];
-
 		int i;
-		Random rnd = new Random();
 		for (i = 1; i < 4; i++)
-			buff[i] = Utils.loByte(rnd.nextInt());
+			initCheckBoxBuff[i] = Utils.loByte(initBoxRnd.nextInt());
 
 		int run = 0;
 		for (i = 0; i < password.length; i++)
-			run += password[i] ^ (buff[i % 3 + 1] & 0xFF);
+			run += password[i] ^ (initCheckBoxBuff[i % 3 + 1] & 0xFF);
 
 		run = run & 0xFF;
 		if (run == 0)
 			run = 0x55;
 
-		if (!doCmd(GET_CPU, buff, 1, 3))
+		if (!doCmd(GET_CPU, initCheckBoxBuff, 1, 3))
 			return false;
 
-		if (!getCmdData(buff, 0, 32))
+		if (!getCmdData(initCheckBoxBuff, 0, 32))
 			return false;
 
 		runFlag = 0;
 		timeUnit = 0;
 
 		for (i = 0; i < 3; i++)
-			timeUnit = timeUnit * 256 + (buff[i] & 0xFF);
-		timeBaseDB = buff[i++] & 0xFF;
-		timeExternDB = buff[i++] & 0xFF;
+			timeUnit = timeUnit * 256 + (initCheckBoxBuff[i] & 0xFF);
+		timeBaseDB = initCheckBoxBuff[i++] & 0xFF;
+		timeExternDB = initCheckBoxBuff[i++] & 0xFF;
 
 		for (i = 0; i < MAXPORT_NUM; i++)
 			port[i] = Utils.loByte(0xFF);
-		pos = 0;
+		bufPos = 0;
 		isDB20 = false;
 		return true;
 	}
 
 	private boolean checkBox() {
-		byte[] buff = new byte[32];
 		if (!doCmd(GET_BOXID))
 			return false;
-		if (!getCmdData(buff, 0, 32))
+		if (!getCmdData(initCheckBoxBuff, 0, 32))
 			return false;
-		boxVer = (buff[10] << 8) | buff[11];
+		boxVer = (initCheckBoxBuff[10] << 8) | initCheckBoxBuff[11];
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean updateBuff(int type, int addr, int data) {
 		byte[] buff = new byte[3];
 		int len = 0;
@@ -518,6 +535,7 @@ public final class Commbox {
 		return doSet(type, buff, 0, len);
 	}
 
+	@SuppressWarnings("unused")
 	private boolean copyBuff(int dest, int src, int len) {
 		byte[] buff = new byte[3];
 		buff[0] = Utils.loByte(dest);
@@ -630,24 +648,24 @@ public final class Commbox {
 	}
 
 	public void newBatch() throws CommboxException {
-		pos = 0;
+		bufPos = 0;
 		isLink = (buffId == LINKBLOCK ? true : false);
 		isDoNow = false;
 	}
 
 	public void delBatch() throws CommboxException {
 		isDoNow = true;
-		pos = 0;
+		bufPos = 0;
 	}
 
 	public void endBatch() throws CommboxException {
 		int i = 0;
 		isDoNow = true;
-		buf[pos++] = 0; // 命令块以0x00标记结束
+		buf[bufPos++] = 0; // 命令块以0x00标记结束
 		if (isLink) {
 			// 修改UpdateBuff使用到的地址
 			while (buf[i] != 0) {
-				int tmp = MAXBUFF_LEN - pos;
+				int tmp = MAXBUFF_LEN - bufPos;
 				switch (buf[i] & 0xFC) {
 				case COPY_BYTE:
 					buf[i + 3] = Utils.loByte((buf[i + 3] & 0xFF) + tmp);
@@ -677,7 +695,7 @@ public final class Commbox {
 			}
 		}
 
-		if (!doCmd(WR_DATA, buf, 0, pos))
+		if (!doCmd(WR_DATA, buf, 0, bufPos))
 			throw new CommboxException("EndBatch fail!");
 	}
 
@@ -723,7 +741,6 @@ public final class Commbox {
 
 	public void setCommLink(int ctrlWord1, int ctrlWord2, int ctrlWord3)
 			throws CommboxException {
-		byte[] ctrlWord = new byte[3];
 		int modeControl = ctrlWord1 & 0xE0;
 		int length = 3;
 		ctrlWord[0] = Utils.loByte(ctrlWord1);
@@ -755,27 +772,25 @@ public final class Commbox {
 	}
 
 	public void setCommBaud(double baud) throws CommboxException {
-		byte[] baudTime = new byte[2];
 		double instructNum = 1000000000000.0 / (timeUnit * baud);
 		if (isDB20)
 			instructNum /= 20;
 		instructNum += 0.5;
 		if (instructNum > 65535 || instructNum < 10)
 			throw new CommboxException("SetCommBaud fail!");
-		baudTime[0] = Utils.hiByte((long) instructNum);
-		baudTime[1] = Utils.loByte((long) instructNum);
+		timeBuff[0] = Utils.hiByte((long) instructNum);
+		timeBuff[1] = Utils.loByte((long) instructNum);
 
-		if (baudTime[0] == 0) {
-			if (!doSet(SET_BAUD, baudTime[1]))
+		if (timeBuff[0] == 0) {
+			if (!doSet(SET_BAUD, timeBuff[1]))
 				throw new CommboxException("SetCommBaud fail!");
 		} else {
-			if (!doSet(SET_BAUD, baudTime))
+			if (!doSet(SET_BAUD, timeBuff))
 				throw new CommboxException("SetCommBaud fail!");
 		}
 	}
 
 	public void setCommTime(int type, Timer time) throws CommboxException {
-		byte[] timeBuff = new byte[2];
 		getLinkTime(type, time);
 
 		long microTime = time.toMicroseconds();
@@ -807,7 +822,6 @@ public final class Commbox {
 	}
 
 	public void commboxDelay(Timer time) throws CommboxException {
-		byte[] timeBuff = new byte[2];
 		int delayWord = DELAYSHORT;
 		long microTime = (long) (time.toMicroseconds() / (timeUnit / 1000000.0));
 

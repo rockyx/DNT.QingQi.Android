@@ -23,15 +23,18 @@ public class PowertrainDataStreamECU300 extends DataStreamFunction {
 			if (!queryLiveData("QingQi Mikuni ECU300")) {
 				throw new DiagException("Cannot find live datas");
 			}
+
 			lds = getLiveDataItems();
+			
+			for (LiveDataItem item : lds) {
+				item.setFormattedCommand(getFormat().pack(item.getCommand()));
+				item.setEnabled(true);
+			}
+			lds.get("TS").setEnabled(false);
+
 			break;
 		default:
 			throw new DiagException("Unsupport model");
-		}
-
-		for (LiveDataItem item : lds) {
-			item.setFormattedCommand(getFormat().pack(item.getCommand()));
-			item.setEnabled(true);
 		}
 
 		setReadInterval(Timer.fromMilliseconds(10));
@@ -42,85 +45,135 @@ public class PowertrainDataStreamECU300 extends DataStreamFunction {
 		LiveDataList lds = getLiveDataItems();
 		LiveDataItem item = lds.get("ER");
 		item.setCalc(new LiveDataItemCalc(item) {
-
+			private byte[] buff = new byte[2];
+			
 			@Override
-			public String calc() {
-				int value = buffer.get(1) & 0xFF;
-				value *= 256;
-				value += buffer.get(2) & 0xFF;
-				value /= 256;
-				value *= 500;
+			protected String calc() {
+				int value = (((buff[0] & 0xFF) * 256) + (buff[1] & 0xFF)) * 500 / 256;
 				return Integer.toString(value);
+			}
+			
+			@Override
+			protected boolean dataChanged() {
+				if ((buff[0] != buffer.get(1)) || (buff[1] != buffer.get(2))) {
+					buff[0] = buffer.get(1);
+					buff[1] = buffer.get(2);
+					return true;
+				}
+				return false;
 			}
 		});
 
 		item = lds.get("BV");
 		item.setCalc(new LiveDataItemCalc(item) {
+			private byte[] buff = new byte[2];
+			
+			@Override
+			protected String calc() {
+				double value = ((double)((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF))) * 18.75 / 65536;
+				return String.format(Locale.getDefault(), "%.1f", value);				
+			}
 
 			@Override
-			public String calc() {
-				double value = buffer.get(1) & 0xFF;
-				value *= 256;
-				value += buffer.get(2) & 0xFF;
-				value *= 18.75;
-				value /= 65536;
-				return String.format(Locale.getDefault(), "%.1f", value);
+			protected boolean dataChanged() {
+				if ((buff[0] != buffer.get(1)) || (buff[1] != buffer.get(2))) {
+					buff[0] = buffer.get(1);
+					buff[1] = buffer.get(2);
+					return true;
+				}
+				return false;
 			}
 		});
 		
 		item = lds.get("TPS");
 		item.setCalc(new LiveDataItemCalc(item){
-
+			private byte[] buff = new byte[2];
+			
 			@Override
-			public String calc() {
-				double value = buffer.get(1) & 0xFF;
-				value *= 256;
-				value += buffer.get(2) & 0xFF;
-				value *= 100;
-				value /= 4096;
+			protected String calc() {
+				double value = ((double)((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF))) * 100 / 4096;
 				return String.format(Locale.getDefault(), "%.1f", value);
+			}
+			
+			@Override
+			protected boolean dataChanged() {
+				if ((buff[0] != buffer.get(1)) || (buff[1] != buffer.get(2))) {
+					buff[0] = buffer.get(1);
+					buff[1] = buffer.get(2);
+					return true;
+				}
+				return false;
 			}
 		});
 		
 		item = lds.get("ET");
 		item.setCalc(new LiveDataItemCalc(item){
+			private byte[] buff = new byte[2];
 
 			@Override
-			public String calc() {
-				double value = buffer.get(1) & 0xFF;
-				value *= 256;
-				value += buffer.get(2) & 0xFF;
-				value /= 256;
-				value -= 50;
+			protected String calc() {
+				double value = ((double)((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF))) / 256 - 50;
 				return String.format(Locale.getDefault(), "%.1f", value);
+			}
+			
+			@Override
+			protected boolean dataChanged() {
+				if ((buff[0] != buffer.get(1)) || (buff[1] != buffer.get(2))) {
+					buff[0] = buffer.get(1);
+					buff[1] = buffer.get(2);
+					return true;
+				}
+				return false;
 			}
 			
 		});
 		
 		item = lds.get("TS");
 		item.setCalc(new LiveDataItemCalc(item) {
+			private int buff = 0;
 
 			@Override
-			public String calc() {
-				if ((buffer.get(1) & 0x02) != 0) {
+			protected String calc() {
+				if (buff != 0) {
 					return getDB().queryText("Tilt", "System");
 				} else {
 					return getDB().queryText("No Tilt", "System");
 				}
 			}
 			
+			@Override
+			protected boolean dataChanged() {
+				int temp = buffer.get(1) & 0x02;
+				if (buff != temp) {
+					buff = temp;
+					return true;
+				}
+				return false;
+			}
+			
 		});
 		
 		item = lds.get("ERF");
 		item.setCalc(new LiveDataItemCalc(item){
+			private int buff = 0;
 
 			@Override
-			public String calc() {
-				if (buffer.get(1) == 1) {
+			protected String calc() {
+				if (buff == 1) {
 					return getDB().queryText("Running", "System");
 				} else {
 					return getDB().queryText("Stopped", "System");
 				}
+			}
+			
+			@Override
+			protected boolean dataChanged() {
+				int temp = buffer.get(1);
+				if (buff != temp) {
+					buff = temp;
+					return true;
+				}
+				return false;
 			}
 			
 		});

@@ -8,6 +8,7 @@ public abstract class LiveDataItemCalc {
 	protected ByteBuffer bb;
 	protected LiveDataItem item;
 	protected LiveDataBuffer buffer;
+	protected String oldValue = null;
 
 	public LiveDataItemCalc(LiveDataItem item) {
 		cs = Charset.forName("US-ASCII");
@@ -16,5 +17,16 @@ public abstract class LiveDataItemCalc {
 		this.buffer = item.getEcuResponseBuff();
 	}
 
-	public abstract String calc();
+	protected abstract String calc();
+
+	protected abstract boolean dataChanged();
+
+	public String getValue() {
+		if (oldValue == null) {
+			oldValue = calc();
+		} else if (dataChanged()) {
+			oldValue = calc();
+		}
+		return oldValue;
+	}
 }

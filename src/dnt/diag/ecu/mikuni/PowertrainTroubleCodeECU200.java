@@ -7,13 +7,10 @@ import java.util.Map;
 
 import android.util.SparseArray;
 import dnt.diag.Timer;
-import dnt.diag.channel.Channel;
 import dnt.diag.channel.ChannelException;
 import dnt.diag.data.TroubleCodeItem;
-import dnt.diag.db.VehicleDB;
 import dnt.diag.ecu.DiagException;
 import dnt.diag.ecu.TroubleCodeFunction;
-import dnt.diag.formats.Format;
 
 class PowertrainTroubleCodeECU200 extends TroubleCodeFunction {
 

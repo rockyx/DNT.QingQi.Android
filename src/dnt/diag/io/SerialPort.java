@@ -1,16 +1,21 @@
 package dnt.diag.io;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import dnt.diag.Settings;
 import dnt.diag.Timer;
-import dnt.qingqi.BuildConfig;
 
 public final class SerialPort {
+	static StringBuilder dataSB;
+
 	static {
 		System.loadLibrary("dntdiag");
+
+		dataSB = new StringBuilder();
 	}
 
 	public final static int HANDSHAKE_NONE = 0;
@@ -51,6 +56,7 @@ public final class SerialPort {
 	private int stopBits;
 	private int handshake;
 	private int dataBits;
+	@SuppressWarnings("unused")
 	private boolean breakState = false;
 	private boolean dtrEnable = false;
 	private boolean rtsEnable = false;
@@ -60,6 +66,8 @@ public final class SerialPort {
 	private int writeTimeout = INFINITE_TIMEOUT;
 	private int readBufferSize = DEFAULT_READ_BUFFER_SIZE;
 	private int writeBufferSize = DEFAULT_WRITE_BUFFER_SIZE;
+	private byte[] buff = new byte[1];
+	private static BufferedWriter writer = null;
 
 	public SerialPort() {
 		this(getDefaultPortName(), DEFAULT_BAUD_RATE, DEFAULT_PARITY,
@@ -247,7 +255,6 @@ public final class SerialPort {
 
 	public int readByte() throws IOException {
 		checkOpen();
-		byte[] buff = new byte[1];
 		if (stream.read(buff, 0, 1) > 0) {
 			showData(buff, 0, 1, "Recv");
 			return buff[0] & 0xFF;
@@ -280,24 +287,35 @@ public final class SerialPort {
 		return new String[] { "s3c2410_serial1" };
 	}
 
-	private void showData(byte[] buff, int offset, int count, String tag) {
-		if (BuildConfig.DEBUG) {
+	public static void setDebugWriter(BufferedWriter writer) {
+		SerialPort.writer = writer;
+	}
+
+	private static void showData(byte[] buff, int offset, int count, String tag) {
+		if (Settings.debug) {
 			count += offset;
 
-			StringBuilder sb = new StringBuilder();
+			dataSB.setLength(0);
 
 			Date now = new Date();
 			DateFormat fmt = SimpleDateFormat
 					.getTimeInstance(SimpleDateFormat.FULL);
 
-			sb.append(fmt.format(now));
-			sb.append(String.format(" %s : ", tag));
+			dataSB.append(fmt.format(now));
+			dataSB.append(" ");
+			dataSB.append(tag);
+			dataSB.append(" : ");
 
 			for (int i = offset; i < count; i++) {
-				sb.append(String.format("%1$02X ", buff[i]));
+				dataSB.append(String.format("%1$02X ", buff[i]));
 			}
 
-			android.util.Log.i("Commbox", sb.toString());
+			if (writer != null)
+				try {
+					writer.write(dataSB.toString() + "\n");
+				} catch (IOException e) {
+				}
+			android.util.Log.i("Commbox", dataSB.toString());
 		}
 	}
 }

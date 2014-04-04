@@ -1302,11 +1302,12 @@ dnt.diag.commbox.Commbox:
     public static final int MFR_6
     public static final int MFR_7
     public static final int MFR_N
-    497:518:private boolean updateBuff(int,int,int)
-    522:526:private boolean copyBuff(int,int,int)
-    549:549:public int getBoxVer()
-    720:722:public void keepLink(boolean)
-    910:910:public boolean isOpen()
+    363:363:private varargs boolean sendCmd(int,byte[])
+    514:535:private boolean updateBuff(int,int,int)
+    540:544:private boolean copyBuff(int,int,int)
+    567:567:public int getBoxVer()
+    738:740:public void keepLink(boolean)
+    924:924:public boolean isOpen()
 dnt.diag.commbox.CommboxException:
     private static final long serialVersionUID
 dnt.diag.data.LiveDataList:
@@ -1384,12 +1385,12 @@ dnt.diag.io.SerialPort:
     private static final int DEFAULT_DATA_BITS
     private static final int DEFAULT_PARITY
     private static final int DEFAULT_STOP_BITS
-    70:72:public SerialPort(java.lang.String)
-    75:77:public SerialPort(java.lang.String,int)
-    80:81:public SerialPort(java.lang.String,int,int)
-    84:85:public SerialPort(java.lang.String,int,int,int)
-    126:127:public int getBytesToWrite()
-    150:150:public boolean isOpen()
+    78:80:public SerialPort(java.lang.String)
+    83:85:public SerialPort(java.lang.String,int)
+    88:89:public SerialPort(java.lang.String,int,int)
+    92:93:public SerialPort(java.lang.String,int,int,int)
+    134:135:public int getBytesToWrite()
+    158:158:public boolean isOpen()
 dnt.diag.io.SerialPortStream:
     39:39:public int getReadTimeout()
     51:51:public int getWriteTimeout()
@@ -1399,9 +1400,9 @@ dnt.diag.io.SerialPortStream:
     202:205:public void setBreakState(boolean)
 dnt.diag.io.SerialStream
 dnt.qingqi.App:
-    197:197:public int getWhich()
-    202:214:public void showList(android.content.Context,java.lang.String[],android.content.DialogInterface$OnClickListener)
-    75:75:static synthetic void access$0(dnt.qingqi.App,int)
+    236:236:public int getWhich()
+    241:253:public void showList(android.content.Context,java.lang.String[],android.content.DialogInterface$OnClickListener)
+    83:83:static synthetic void access$0(dnt.qingqi.App,int)
 dnt.qingqi.App$1
 dnt.qingqi.BuildConfig
 dnt.qingqi.Delegate

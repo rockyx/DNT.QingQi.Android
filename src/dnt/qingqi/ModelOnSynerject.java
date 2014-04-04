@@ -81,6 +81,7 @@ public class ModelOnSynerject extends AsyncTask<String, Void, Void> {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				String name = (String) ((TextView) view).getText();
+				app.selectMenu(name);
 				if (name.equals(app.ReadTroubleCode)) {
 					new ModelReadTroubleCodeFunc(context).run();
 				} else if (name.equals(app.ClearTroubleCode)) {

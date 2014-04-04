@@ -3,10 +3,12 @@ package dnt.qingqi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TroubleCodeMenuActivity extends Activity {
 	private ListView listView;
@@ -35,6 +37,8 @@ public class TroubleCodeMenuActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				String name = (String) ((TextView) view).getText();
+				app.selectMenu(name);
 				Intent intent = null;
 				switch (position) {
 				case 0: // Current Trouble Code
@@ -54,4 +58,15 @@ public class TroubleCodeMenuActivity extends Activity {
 			}
 		});
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			app.backMenu();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	
+	
 }

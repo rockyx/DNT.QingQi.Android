@@ -1423,6 +1423,7 @@ dnt.diag.ProtocolType -> dnt.diag.a:
 dnt.diag.Settings -> dnt.diag.b:
     java.lang.String language -> a
     int device -> b
+    boolean debug -> c
 dnt.diag.Timer -> dnt.diag.c:
     long nanoSecs -> d
     double NANO_PER_MICRO -> a
@@ -1553,31 +1554,33 @@ dnt.diag.channel.MikuniECU300Channel -> dnt.diag.b.k:
     int sendAndRecv(byte[],int,int,byte[]) -> a
     void startCommunicate() -> c
 dnt.diag.commbox.Commbox -> dnt.diag.c.a:
-    int[] password -> a
-    int timeUnit -> b
-    int timeBaseDB -> c
-    int timeExternDB -> d
-    byte[] port -> e
-    byte[] buf -> f
-    int pos -> g
-    boolean isLink -> h
-    int runFlag -> i
-    int startPos -> j
+    int[] password -> b
+    int timeUnit -> c
+    int timeBaseDB -> d
+    int timeExternDB -> e
+    byte[] port -> f
+    byte[] buf -> g
+    int bufPos -> h
+    boolean isLink -> i
+    int runFlag -> j
     int boxVer -> k
     boolean isOpen -> l
     dnt.diag.io.SerialPort serialPort -> m
     boolean isDB20 -> n
     boolean isDoNow -> o
-    dnt.diag.Timer reqByteToByte -> p
-    dnt.diag.Timer reqWaitTime -> q
-    dnt.diag.Timer resByteToByte -> r
-    dnt.diag.Timer resWaitTime -> s
-    int buffId -> t
+    dnt.diag.Timer resWaitTime -> p
+    int buffId -> q
+    byte[] sendCmdData -> r
+    byte[] getCmdDataCS -> s
+    byte[] doCmdData -> t
+    byte[] initCheckBoxBuff -> u
+    java.util.Random initBoxRnd -> a
+    byte[] ctrlWord -> v
+    byte[] timeBuff -> w
     void setBuffId(int) -> a
     void getLinkTime(int,dnt.diag.Timer) -> b
     boolean checkSend() -> i
     boolean sendCmd(int,byte[],int,int) -> a
-    boolean sendCmd(int,byte[]) -> a
     boolean sendCmd(int) -> c
     int recvBytes(byte[],int,int) -> c
     boolean getCmdData(byte[],int,int) -> d
@@ -1585,7 +1588,7 @@ dnt.diag.commbox.Commbox -> dnt.diag.c.a:
     boolean doCmd(int) -> d
     boolean doSet(int,byte[],int,int) -> c
     boolean doSet(int) -> e
-    boolean doSet(int,byte[]) -> b
+    boolean doSet(int,byte[]) -> a
     boolean initBox() -> j
     boolean checkBox() -> k
     void clear() -> a
@@ -1690,7 +1693,10 @@ dnt.diag.data.LiveDataItemCalc -> dnt.diag.d.d:
     java.nio.ByteBuffer bb -> b
     dnt.diag.data.LiveDataItem item -> c
     dnt.diag.data.LiveDataBuffer buffer -> d
+    java.lang.String oldValue -> e
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
+    java.lang.String getValue() -> c
 dnt.diag.data.LiveDataList -> dnt.diag.d.e:
     java.util.ArrayList items -> a
     java.util.Map queryByShortName -> b
@@ -1869,66 +1875,82 @@ dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 -> dnt.diag.f.a.a:
     void access$1(double,dnt.diag.data.LiveDataItem) -> b
     dnt.diag.db.VehicleDB access$2(dnt.diag.ecu.mikuni.PowertrainDataStreamECU200) -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$1 -> dnt.diag.f.a.b:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$10 -> dnt.diag.f.a.c:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$11 -> dnt.diag.f.a.d:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$12 -> dnt.diag.f.a.e:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$2 -> dnt.diag.f.a.f:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$3 -> dnt.diag.f.a.g:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$4 -> dnt.diag.f.a.h:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$5 -> dnt.diag.f.a.i:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$6 -> dnt.diag.f.a.j:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$7 -> dnt.diag.f.a.k:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$8 -> dnt.diag.f.a.l:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
 dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$9 -> dnt.diag.f.a.m:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> e
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> f
     java.lang.String calc() -> a
-dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 -> dnt.diag.f.a.n:
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU200$MyLiveDataItemCalc -> dnt.diag.f.a.n:
+    byte[] buff -> g
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU200 this$0 -> h
+    boolean dataChanged() -> b
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 -> dnt.diag.f.a.o:
     dnt.diag.ecu.mikuni.PowertrainModel model -> a
     int[] $SWITCH_TABLE$dnt$diag$ecu$mikuni$PowertrainModel -> b
     void initCalcFunctions() -> d
     int[] $SWITCH_TABLE$dnt$diag$ecu$mikuni$PowertrainModel() -> i
     dnt.diag.db.VehicleDB access$1(dnt.diag.ecu.mikuni.PowertrainDataStreamECU300) -> a
-dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$1 -> dnt.diag.f.a.o:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> e
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$1 -> dnt.diag.f.a.p:
+    byte[] buff -> g
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> f
     java.lang.String calc() -> a
-dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$2 -> dnt.diag.f.a.p:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> e
+    boolean dataChanged() -> b
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$2 -> dnt.diag.f.a.q:
+    byte[] buff -> g
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> f
     java.lang.String calc() -> a
-dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$3 -> dnt.diag.f.a.q:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> e
+    boolean dataChanged() -> b
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$3 -> dnt.diag.f.a.r:
+    byte[] buff -> g
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> f
     java.lang.String calc() -> a
-dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$4 -> dnt.diag.f.a.r:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> e
+    boolean dataChanged() -> b
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$4 -> dnt.diag.f.a.s:
+    byte[] buff -> g
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> f
     java.lang.String calc() -> a
-dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$5 -> dnt.diag.f.a.s:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> e
+    boolean dataChanged() -> b
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$5 -> dnt.diag.f.a.t:
+    int buff -> g
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> f
     java.lang.String calc() -> a
-dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$6 -> dnt.diag.f.a.t:
-    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> e
+    boolean dataChanged() -> b
+dnt.diag.ecu.mikuni.PowertrainDataStreamECU300$6 -> dnt.diag.f.a.u:
+    int buff -> g
+    dnt.diag.ecu.mikuni.PowertrainDataStreamECU300 this$0 -> f
     java.lang.String calc() -> a
-dnt.diag.ecu.mikuni.PowertrainECU200 -> dnt.diag.f.a.u:
+    boolean dataChanged() -> b
+dnt.diag.ecu.mikuni.PowertrainECU200 -> dnt.diag.f.a.v:
     byte[] readECUVersion1 -> f
     byte[] readECUVersion2 -> g
     byte[] engineRevolutions -> h
@@ -1947,7 +1969,7 @@ dnt.diag.ecu.mikuni.PowertrainECU200 -> dnt.diag.f.a.u:
     void longTermLearnValueZoneInitialization() -> n
     void iscLearnValueInitialization() -> o
     int[] $SWITCH_TABLE$dnt$diag$ecu$mikuni$PowertrainModel() -> p
-dnt.diag.ecu.mikuni.PowertrainECU300 -> dnt.diag.f.a.v:
+dnt.diag.ecu.mikuni.PowertrainECU300 -> dnt.diag.f.a.w:
     byte[] startConnection -> f
     byte[] tpsIdleLearningValueSetting -> g
     byte[] longTermLearningValueReset -> h
@@ -1966,7 +1988,7 @@ dnt.diag.ecu.mikuni.PowertrainECU300 -> dnt.diag.f.a.v:
     void dsvISCLearningValueSetting() -> n
     dnt.diag.ecu.mikuni.PowertrainVersion readVersion() -> o
     int[] $SWITCH_TABLE$dnt$diag$ecu$mikuni$PowertrainModel() -> p
-dnt.diag.ecu.mikuni.PowertrainModel -> dnt.diag.f.a.w:
+dnt.diag.ecu.mikuni.PowertrainModel -> dnt.diag.f.a.x:
     dnt.diag.ecu.mikuni.PowertrainModel DCJ_16A -> a
     dnt.diag.ecu.mikuni.PowertrainModel DCJ_16C -> b
     dnt.diag.ecu.mikuni.PowertrainModel DCJ_10 -> c
@@ -1977,7 +1999,7 @@ dnt.diag.ecu.mikuni.PowertrainModel -> dnt.diag.f.a.w:
     dnt.diag.ecu.mikuni.PowertrainModel[] ENUM$VALUES -> h
     dnt.diag.ecu.mikuni.PowertrainModel[] values() -> values
     dnt.diag.ecu.mikuni.PowertrainModel valueOf(java.lang.String) -> valueOf
-dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU200 -> dnt.diag.f.a.x:
+dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU200 -> dnt.diag.f.a.y:
     byte[] syntheticFailure -> a
     android.util.SparseArray failureCmds -> b
     android.util.SparseArray failureCalcs -> c
@@ -1998,12 +2020,12 @@ dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU200 -> dnt.diag.f.a.x:
     java.util.List readHistory() -> e
     void clear() -> f
     int[] $SWITCH_TABLE$dnt$diag$ecu$mikuni$PowertrainModel() -> g
-dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU200$TroubleCodeCalc -> dnt.diag.f.a.y:
+dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU200$TroubleCodeCalc -> dnt.diag.f.a.z:
     java.lang.String low -> a
     java.lang.String high -> b
     dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU200 this$0 -> c
     java.lang.String calcTroubleCode(byte[],int,int) -> a
-dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU300 -> dnt.diag.f.a.z:
+dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU300 -> dnt.diag.f.a.aa:
     byte[] syntheticFailure -> a
     android.util.SparseArray failureCmds -> b
     android.util.SparseArray failureCalcs -> c
@@ -2021,12 +2043,12 @@ dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU300 -> dnt.diag.f.a.z:
     java.util.List readHistory() -> e
     void clear() -> f
     int[] $SWITCH_TABLE$dnt$diag$ecu$mikuni$PowertrainModel() -> g
-dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU300$TroubleCodeCalc -> dnt.diag.f.a.aa:
+dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU300$TroubleCodeCalc -> dnt.diag.f.a.ab:
     java.lang.String low -> a
     java.lang.String high -> b
     dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU300 this$0 -> c
     java.lang.String calcTroubleCode(byte[],int,int) -> a
-dnt.diag.ecu.mikuni.PowertrainVersion -> dnt.diag.f.a.ab:
+dnt.diag.ecu.mikuni.PowertrainVersion -> dnt.diag.f.a.ac:
     java.lang.String model -> a
     java.lang.String hardware -> b
     java.lang.String software -> c
@@ -2085,182 +2107,300 @@ dnt.diag.ecu.synerject.PowertrainDataStream -> dnt.diag.f.b.f:
     void access$1(double,dnt.diag.data.LiveDataItem) -> b
     dnt.diag.db.VehicleDB access$2(dnt.diag.ecu.synerject.PowertrainDataStream) -> a
 dnt.diag.ecu.synerject.PowertrainDataStream$1 -> dnt.diag.f.b.g:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
+    boolean dataChanged() -> b
     java.lang.String calc() -> a
 dnt.diag.ecu.synerject.PowertrainDataStream$10 -> dnt.diag.f.b.h:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$11 -> dnt.diag.f.b.i:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$12 -> dnt.diag.f.b.j:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$13 -> dnt.diag.f.b.k:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$14 -> dnt.diag.f.b.l:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$15 -> dnt.diag.f.b.m:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$16 -> dnt.diag.f.b.n:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$17 -> dnt.diag.f.b.o:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$18 -> dnt.diag.f.b.p:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$19 -> dnt.diag.f.b.q:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$2 -> dnt.diag.f.b.r:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$20 -> dnt.diag.f.b.s:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$21 -> dnt.diag.f.b.t:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$22 -> dnt.diag.f.b.u:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$23 -> dnt.diag.f.b.v:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$24 -> dnt.diag.f.b.w:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$25 -> dnt.diag.f.b.x:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$26 -> dnt.diag.f.b.y:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$27 -> dnt.diag.f.b.z:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$28 -> dnt.diag.f.b.aa:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$29 -> dnt.diag.f.b.ab:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$3 -> dnt.diag.f.b.ac:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$30 -> dnt.diag.f.b.ad:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$31 -> dnt.diag.f.b.ae:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$32 -> dnt.diag.f.b.af:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$33 -> dnt.diag.f.b.ag:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$34 -> dnt.diag.f.b.ah:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$35 -> dnt.diag.f.b.ai:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$36 -> dnt.diag.f.b.aj:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$37 -> dnt.diag.f.b.ak:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$38 -> dnt.diag.f.b.al:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$39 -> dnt.diag.f.b.am:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$4 -> dnt.diag.f.b.an:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$40 -> dnt.diag.f.b.ao:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$41 -> dnt.diag.f.b.ap:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$42 -> dnt.diag.f.b.aq:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$43 -> dnt.diag.f.b.ar:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$44 -> dnt.diag.f.b.as:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$45 -> dnt.diag.f.b.at:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$46 -> dnt.diag.f.b.au:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$47 -> dnt.diag.f.b.av:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$48 -> dnt.diag.f.b.aw:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$49 -> dnt.diag.f.b.ax:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$5 -> dnt.diag.f.b.ay:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$50 -> dnt.diag.f.b.az:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$51 -> dnt.diag.f.b.ba:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$52 -> dnt.diag.f.b.bb:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$53 -> dnt.diag.f.b.bc:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$54 -> dnt.diag.f.b.bd:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$55 -> dnt.diag.f.b.be:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$56 -> dnt.diag.f.b.bf:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$57 -> dnt.diag.f.b.bg:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$58 -> dnt.diag.f.b.bh:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$59 -> dnt.diag.f.b.bi:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$6 -> dnt.diag.f.b.bj:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$7 -> dnt.diag.f.b.bk:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$8 -> dnt.diag.f.b.bl:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainDataStream$9 -> dnt.diag.f.b.bm:
-    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> e
+    int buff -> g
+    dnt.diag.ecu.synerject.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.synerject.PowertrainModel -> dnt.diag.f.b.bn:
     dnt.diag.ecu.synerject.PowertrainModel QM125T_8H -> a
     dnt.diag.ecu.synerject.PowertrainModel QM250GY -> b
@@ -2291,26 +2431,40 @@ dnt.diag.ecu.visteon.PowertrainDataStream -> dnt.diag.f.c.b:
     void initCalcFunctions() -> d
     int[] $SWITCH_TABLE$dnt$diag$ecu$visteon$PowertrainModel() -> i
 dnt.diag.ecu.visteon.PowertrainDataStream$1 -> dnt.diag.f.c.c:
-    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.visteon.PowertrainDataStream$2 -> dnt.diag.f.c.d:
-    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.visteon.PowertrainDataStream$3 -> dnt.diag.f.c.e:
-    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.visteon.PowertrainDataStream$4 -> dnt.diag.f.c.f:
-    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.visteon.PowertrainDataStream$5 -> dnt.diag.f.c.g:
-    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.visteon.PowertrainDataStream$6 -> dnt.diag.f.c.h:
-    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> e
+    byte buff -> g
+    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.visteon.PowertrainDataStream$7 -> dnt.diag.f.c.i:
-    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> e
+    byte[] buff -> g
+    dnt.diag.ecu.visteon.PowertrainDataStream this$0 -> f
     java.lang.String calc() -> a
+    boolean dataChanged() -> b
 dnt.diag.ecu.visteon.PowertrainModel -> dnt.diag.f.c.j:
     dnt.diag.ecu.visteon.PowertrainModel QM250J_2L -> a
     dnt.diag.ecu.visteon.PowertrainModel[] ENUM$VALUES -> b
@@ -2356,21 +2510,24 @@ dnt.diag.io.NativeMethods -> dnt.diag.io.NativeMethods:
     int getBytesInBuffer(int,boolean) -> getBytesInBuffer
     int discardBuffer(int,boolean) -> discardBuffer
 dnt.diag.io.SerialPort -> dnt.diag.io.a:
-    boolean isOpen -> a
-    int baudRate -> b
-    int parity -> c
-    int stopBits -> d
-    int handshake -> e
-    int dataBits -> f
-    boolean breakState -> g
-    boolean dtrEnable -> h
-    boolean rtsEnable -> i
-    dnt.diag.io.SerialPortStream stream -> j
-    java.lang.String portName -> k
-    int readTimeout -> l
-    int writeTimeout -> m
-    int readBufferSize -> n
-    int writeBufferSize -> o
+    java.lang.StringBuilder dataSB -> a
+    boolean isOpen -> b
+    int baudRate -> c
+    int parity -> d
+    int stopBits -> e
+    int handshake -> f
+    int dataBits -> g
+    boolean breakState -> h
+    boolean dtrEnable -> i
+    boolean rtsEnable -> j
+    dnt.diag.io.SerialPortStream stream -> k
+    java.lang.String portName -> l
+    int readTimeout -> m
+    int writeTimeout -> n
+    int readBufferSize -> o
+    int writeBufferSize -> p
+    byte[] buff -> q
+    java.io.BufferedWriter writer -> r
     java.lang.String getDefaultPortName() -> h
     void checkOpen() -> i
     void setBaudRate(int) -> a
@@ -2391,6 +2548,7 @@ dnt.diag.io.SerialPort -> dnt.diag.io.a:
     void write(byte[],int,int) -> b
     void write(byte[]) -> a
     java.lang.String[] getPortNames() -> g
+    void setDebugWriter(java.io.BufferedWriter) -> a
     void showData(byte[],int,int,java.lang.String) -> a
 dnt.diag.io.SerialPortStream -> dnt.diag.io.b:
     int fd -> a
@@ -2526,6 +2684,8 @@ dnt.qingqi.App -> dnt.qingqi.App:
     android.app.AlertDialog list -> ae
     int which -> af
     dnt.diag.ecu.AbstractECU ecu -> ag
+    java.util.List menuHistory -> ah
+    java.io.BufferedWriter writer -> ai
     void setResources(dnt.diag.db.VehicleDB,dnt.diag.commbox.Commbox) -> a
     java.lang.String queryText(java.lang.String,java.lang.String) -> a
     dnt.diag.db.VehicleDB getDB() -> a
@@ -2537,6 +2697,9 @@ dnt.qingqi.App -> dnt.qingqi.App:
     void showStatus(android.content.Context,java.lang.String) -> a
     void hideStatus() -> f
     void showFatal(android.content.Context,java.lang.String,android.content.DialogInterface$OnClickListener) -> a
+    void selectModel(java.lang.String) -> a
+    void selectMenu(java.lang.String) -> b
+    void backMenu() -> g
 dnt.qingqi.BootCompleteReceiver -> dnt.qingqi.BootCompleteReceiver:
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
 dnt.qingqi.DataStreamActivity -> dnt.qingqi.DataStreamActivity:
@@ -2586,8 +2749,11 @@ dnt.qingqi.DataStreamFunc -> dnt.qingqi.l:
     void run() -> a
 dnt.qingqi.DataStreamSelectedActivity -> dnt.qingqi.DataStreamSelectedActivity:
     java.lang.String model -> a
+    dnt.qingqi.App app -> b
     void onCreate(android.os.Bundle) -> onCreate
-    java.lang.String access$0(dnt.qingqi.DataStreamSelectedActivity) -> a
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    dnt.qingqi.App access$0(dnt.qingqi.DataStreamSelectedActivity) -> a
+    java.lang.String access$1(dnt.qingqi.DataStreamSelectedActivity) -> b
 dnt.qingqi.DataStreamSelectedActivity$1 -> dnt.qingqi.m:
     dnt.qingqi.DataStreamSelectedActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
@@ -2620,7 +2786,9 @@ dnt.qingqi.ModelDataStreamFunc -> dnt.qingqi.q:
 dnt.qingqi.ModelFunctionsActivity -> dnt.qingqi.ModelFunctionsActivity:
     java.lang.String model -> a
     android.widget.ListView listView -> b
+    dnt.qingqi.App app -> c
     void onCreate(android.os.Bundle) -> onCreate
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
 dnt.qingqi.ModelOnMikuniECU200 -> dnt.qingqi.r:
     android.content.Context context -> a
     android.widget.ListView listView -> b
@@ -2768,7 +2936,9 @@ dnt.qingqi.ModelReadTroubleCodeFunc -> dnt.qingqi.ai:
     android.content.Context context -> a
     void run() -> a
 dnt.qingqi.SelectTypesActivity -> dnt.qingqi.SelectTypesActivity:
+    dnt.qingqi.App app -> a
     void onCreate(android.os.Bundle) -> onCreate
+    dnt.qingqi.App access$0(dnt.qingqi.SelectTypesActivity) -> a
 dnt.qingqi.SelectTypesActivity$1 -> dnt.qingqi.aj:
     dnt.qingqi.SelectTypesActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
@@ -2790,6 +2960,7 @@ dnt.qingqi.StaticDataStreamActivity -> dnt.qingqi.StaticDataStreamActivity:
     java.lang.String[] arrays -> e
     void onCreate(android.os.Bundle) -> onCreate
     void showResult(java.lang.String) -> a
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
     dnt.qingqi.App access$0(dnt.qingqi.StaticDataStreamActivity) -> a
     void access$1(dnt.qingqi.StaticDataStreamActivity,dnt.diag.ecu.DataStreamFunction) -> a
     dnt.diag.ecu.DataStreamFunction access$2(dnt.qingqi.StaticDataStreamActivity) -> b
@@ -2815,6 +2986,8 @@ dnt.qingqi.TroubleCodeMenuActivity -> dnt.qingqi.TroubleCodeMenuActivity:
     java.lang.String[] arrays -> b
     dnt.qingqi.App app -> c
     void onCreate(android.os.Bundle) -> onCreate
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    dnt.qingqi.App access$0(dnt.qingqi.TroubleCodeMenuActivity) -> a
 dnt.qingqi.TroubleCodeMenuActivity$1 -> dnt.qingqi.ao:
     dnt.qingqi.TroubleCodeMenuActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick

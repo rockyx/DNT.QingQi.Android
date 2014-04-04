@@ -69,6 +69,7 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 					int position, long id) {
 
 				String text = (String) ((TextView) view).getText();
+				app.selectMenu(text);
 
 				if (text.equals(app.ReadTroubleCode)) {
 					new ModelReadTroubleCodeFunc(context).run();
@@ -87,7 +88,6 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 						@Override
 						protected String doInBackground(Void... params) {
 							try {
-								app.disconnectCommbox();
 								app.connectCommbox();
 								ecu.channelInit();
 
@@ -97,6 +97,11 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 								return ex.getMessage();
 							} catch (IOException ex) {
 								return app.OpenCommboxFail;
+							} finally {
+								try {
+									app.disconnectCommbox();
+								} catch (IOException e) {
+								}
 							}
 
 						}
@@ -104,6 +109,7 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 						@Override
 						protected void onPostExecute(String result) {
 							app.hideStatus();
+							app.backMenu();
 							app.showFatal(context, result, null);
 						}
 					}.execute();
@@ -118,7 +124,6 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 						@Override
 						protected String doInBackground(Void... params) {
 							try {
-								app.disconnectCommbox();
 								app.connectCommbox();
 								ecu.channelInit();
 
@@ -128,12 +133,18 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 								return ex.getMessage();
 							} catch (IOException ex) {
 								return app.OpenCommboxFail;
+							} finally {
+								try {
+									app.disconnectCommbox();
+								} catch (IOException e) {
+								}
 							}
 						}
 
 						@Override
 						protected void onPostExecute(String result) {
 							app.hideStatus();
+							app.backMenu();
 							app.showFatal(context, result, null);
 						}
 					}.execute();
@@ -148,7 +159,6 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 						@Override
 						protected String doInBackground(Void... params) {
 							try {
-								app.disconnectCommbox();
 								app.connectCommbox();
 								ecu.channelInit();
 
@@ -158,12 +168,18 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 								return ex.getMessage();
 							} catch (IOException ex) {
 								return app.OpenCommboxFail;
+							} finally {
+								try {
+									app.disconnectCommbox();
+								} catch (IOException e) {
+								}
 							}
 						}
 
 						@Override
 						protected void onPostExecute(String result) {
 							app.hideStatus();
+							app.backMenu();
 							app.showFatal(context, result, null);
 						}
 					}.execute();
@@ -179,7 +195,6 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 						@Override
 						protected String doInBackground(Void... params) {
 							try {
-								app.disconnectCommbox();
 								app.connectCommbox();
 								ecu.channelInit();
 
@@ -191,12 +206,18 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 								return ex.getMessage();
 							} catch (IOException ex) {
 								return app.OpenCommboxFail;
+							} finally {
+								try {
+									app.disconnectCommbox();
+								} catch (IOException e) {
+								}
 							}
 						}
 
 						@Override
 						protected void onPostExecute(String result) {
 							app.hideStatus();
+							app.backMenu();
 							app.showFatal(context, result, null);
 						}
 					}.execute();

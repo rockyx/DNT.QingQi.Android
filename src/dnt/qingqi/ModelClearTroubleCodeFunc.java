@@ -23,7 +23,6 @@ class ModelClearTroubleCodeFunc extends AsyncTask<Void, Void, String> {
 	@Override
 	protected String doInBackground(Void... params) {
 		try {
-			app.disconnectCommbox();
 			app.connectCommbox();
 			app.getECU().channelInit();
 			app.getECU().getTroubleCode().clear();
@@ -32,12 +31,18 @@ class ModelClearTroubleCodeFunc extends AsyncTask<Void, Void, String> {
 			return ex.getMessage();
 		} catch (IOException ex) {
 			return app.OpenCommboxFail;
+		} finally {
+			try {
+				app.disconnectCommbox();
+			} catch (IOException e) {
+			}
 		}
 	}
 
 	@Override
 	protected void onPostExecute(String result) {
 		app.hideStatus();
+		app.backMenu();
 		app.showFatal(context, result, null);
 	}
 }

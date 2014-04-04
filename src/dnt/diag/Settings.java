@@ -8,9 +8,11 @@ public final class Settings {
 	
 	public static String language;
 	public static int device;
+	public static boolean debug;
 
 	static {
 		language = zh_CN;
 		device = TOMIC_DEVICE_V1;
+		debug = true;
 	}
 }

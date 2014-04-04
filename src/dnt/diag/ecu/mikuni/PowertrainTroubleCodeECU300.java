@@ -81,7 +81,7 @@ public class PowertrainTroubleCodeECU300 extends TroubleCodeFunction {
 			failureCmds.put(1, getFormat().pack(cmd));
 			failureCalcs.put(1, new TroubleCodeCalc("0140", "0180"));
 
-			cmd = getDB().queryCommand("TPS Value", "Mikuni ECU300");
+			cmd = getDB().queryCommand("TPS Value Failure", "Mikuni ECU300");
 			failureCmds.put(2, getFormat().pack(cmd));
 			failureCalcs.put(2, new TroubleCodeCalc("0240", "0280"));
 
@@ -249,7 +249,10 @@ public class PowertrainTroubleCodeECU300 extends TroubleCodeFunction {
 					if (code.length() != 4) {
 						code = "0" + code;
 					}
-					tcs.add(getDB().queryTroubleCode(code, sys));
+					TroubleCodeItem item = getDB().queryTroubleCode(code, sys);
+					if (!tcs.contains(item)) {
+						tcs.add(getDB().queryTroubleCode(code, sys));
+					}
 				}
 			}
 

@@ -2,17 +2,18 @@ package dnt.qingqi;
 
 import java.io.IOException;
 import java.util.List;
+
 import dnt.diag.channel.ChannelException;
 import dnt.diag.data.LiveDataItem;
 import dnt.diag.data.LiveDataList;
 import dnt.diag.ecu.DataStreamFunction;
 import dnt.diag.ecu.DiagException;
-
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -31,7 +32,6 @@ public class StaticDataStreamActivity extends Activity {
 		@Override
 		protected String doInBackground(Void... params) {
 			try {
-				app.disconnectCommbox();
 				app.connectCommbox();
 
 				app.getECU().channelInit();
@@ -89,6 +89,11 @@ public class StaticDataStreamActivity extends Activity {
 				return ex.getMessage();
 			} catch (IOException ex) {
 				return app.OpenCommboxFail;
+			} finally {
+				try {
+					app.disconnectCommbox();
+				} catch (IOException e) {
+				}
 			}
 		}
 
@@ -161,4 +166,13 @@ public class StaticDataStreamActivity extends Activity {
 			});
 		}
 	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			app.backMenu();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 }

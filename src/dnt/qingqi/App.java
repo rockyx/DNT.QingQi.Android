@@ -1,6 +1,14 @@
 package dnt.qingqi;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.app.Application;
@@ -8,7 +16,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.ContextThemeWrapper;
-
+import dnt.diag.Settings;
 import dnt.diag.commbox.Commbox;
 import dnt.diag.db.VehicleDB;
 import dnt.diag.ecu.AbstractECU;
@@ -74,6 +82,9 @@ public class App extends Application {
 	private AlertDialog list = null;
 	private int which = 0;
 	private AbstractECU ecu;
+
+	private List<String> menuHistory = new LinkedList<String>();
+	private BufferedWriter writer = null;
 
 	public void setResources(VehicleDB db, Commbox box) {
 		this.db = db;
@@ -155,11 +166,39 @@ public class App extends Application {
 	}
 
 	public void connectCommbox() throws IOException {
-		commbox.connect();
+		if (Settings.debug) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(android.os.Environment.getExternalStorageDirectory());
+			sb.append("/");
+			for (String menu : menuHistory) {
+				sb.append(menu);
+			}
+			sb.append(new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+					.format(Calendar.getInstance().getTime()));
+			File logFile = new File(sb.toString());
+			writer = new BufferedWriter(new FileWriter(logFile));
+			
+			dnt.diag.io.SerialPort.setDebugWriter(writer);
+		}
+		IOException ex = new IOException();
+		for (int i = 0; i < 3; i++) {
+			try {
+				commbox.connect();
+				return;
+			} catch (IOException ex1) {
+				ex = ex1;
+				commbox.disconnect();
+			}
+		}
+		throw ex;
 	}
 
 	public void disconnectCommbox() throws IOException {
 		commbox.disconnect();
+		if (Settings.debug) {
+			if (writer != null)
+				writer.close();
+		}
 	}
 
 	public Commbox getCommbox() {
@@ -211,5 +250,24 @@ public class App extends Application {
 							}
 						}).setPositiveButton(OK, listener).create();
 		list.show();
+	}
+
+	public void selectModel(String model) {
+		if (Settings.debug) {
+			menuHistory.clear();
+			menuHistory.add(model.replaceAll("[^a-zA-Z0-9\u4e00-\u9fa5]", "_"));
+		}
+	}
+
+	public void selectMenu(String menu) {
+		if (Settings.debug) {
+			menuHistory.add(menu.replaceAll("[^a-zA-Z0-9\u4e00-\u9fa5]", "_"));
+		}
+	}
+
+	public void backMenu() {
+		if (Settings.debug) {
+			menuHistory.remove(menuHistory.size() - 1);
+		}
 	}
 }

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class SelectTypesActivity extends Activity {
+	private App app = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class SelectTypesActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
 				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		App app = (App) getApplicationContext();
+		app = (App) getApplicationContext();
 		List<String> arrays = new ArrayList<String>();
 		arrays.add(app.QM125T_8H);
 		arrays.add(app.QM200J_3L);
@@ -49,6 +50,7 @@ public class SelectTypesActivity extends Activity {
 				Intent intent = new Intent(SelectTypesActivity.this,
 						ModelFunctionsActivity.class);
 				String model = (String) ((TextView) view).getText();
+				app.selectModel(model);
 				intent.putExtra("Model", model);
 				startActivity(intent);
 			}

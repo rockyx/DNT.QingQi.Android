@@ -298,7 +298,7 @@ public final class LiveDataItem {
 
 	public void calcValue() {
 		if (calc != null)
-			setValue(calc.calc());
+			setValue(calc.getValue());
 	}
 
 	public void setOnValueChanged(LiveDataValueChanged changed) {

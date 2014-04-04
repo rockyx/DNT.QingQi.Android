@@ -45,17 +45,17 @@ public class MikuniECU300Channel extends AbstractChannel {
 	public void setByteTxInterval(Timer interval) throws ChannelException {
 		byteTime = interval;
 	}
-	
+
 	@Override
 	public void setFrameTxInterval(Timer interval) throws ChannelException {
 		waitTime = interval;
 	}
-	
+
 	@Override
 	public void setByteRxTimeout(Timer timeout) throws ChannelException {
 		recbbout = timeout;
 	}
-	
+
 	@Override
 	public void setFrameRxTimeout(Timer timeout) throws ChannelException {
 		recfrout = timeout;
@@ -91,7 +91,8 @@ public class MikuniECU300Channel extends AbstractChannel {
 			getCommbox().checkResult(Timer.fromMilliseconds(500));
 			getCommbox().delBatch();
 
-			System.arraycopy(output, 2, output, 0, length);
+			leftShiftBuff(output, 2, length);
+			// System.arraycopy(output, 2, output, 0, length);
 			return length;
 
 		} catch (CommboxException e) {

@@ -30,9 +30,10 @@ public final class MikuniECU300Format extends AbstractFormat {
 
 	@Override
 	public byte[] unpack(byte[] src, int offset, int count) {
-		int length = ((src[0] & 0xFF) << 8) | (src[1] & 0xFF);
+		int length = ((src[offset] & 0xFF) << 8) | (src[offset + 1] & 0xFF) - 1;
+		
 		byte[] result = new byte[length];
-		System.arraycopy(src, offset - 2, result, 0, length);
+		System.arraycopy(src, offset + 2, result, 0, length);
 		return result;
 	}
 

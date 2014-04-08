@@ -334,7 +334,7 @@ public final class Commbox {
 		sendCmdData[pos++] = Utils.loByte(cmd + runFlag);
 		if (buffer != null) {
 			for (int i = 0; i < count; i++) {
-				cs += buffer[offset + i];
+				cs += buffer[offset + i] & 0xFF;
 			}
 			System.arraycopy(buffer, offset, sendCmdData, pos, count);
 			pos += count;

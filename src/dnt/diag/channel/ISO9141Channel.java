@@ -131,12 +131,13 @@ public final class ISO9141Channel extends AbstractChannel {
 			throws ChannelException {
 		length--; // data length.
 		int checksum = 0;
-		for (int i = 0; i < length; i++) {
-			checksum += buff[offset + i];
-			if (checksum != buff[length]) {
-				throw new ChannelException(
-						"ISO9141 recv data but checksum error!");
-			}
+		for (int i = offset; i < length; i++) {
+			checksum += buff[offset];
+		}
+		
+		if (checksum != buff[length + offset]) {
+			throw new ChannelException(
+					"ISO9141 recv data but checksum error!");
 		}
 
 		length -= 3;
@@ -176,7 +177,7 @@ public final class ISO9141Channel extends AbstractChannel {
 				// Multiple Frame
 				if (output[k] == output[j] && (output[k + 1] == output[j + 1])
 						&& (output[k + 2] == output[j + 2])) {
-					retlen += singleUnpack(output, k, k - j);
+					retlen += singleUnpack(output, k, j - k);
 					k = j;
 				}
 				j++;

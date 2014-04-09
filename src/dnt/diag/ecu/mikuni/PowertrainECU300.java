@@ -100,8 +100,9 @@ public class PowertrainECU300 extends AbstractECU {
 
 		initCommands();
 
-		setTroubleCode(new PowertrainTroubleCodeECU300(this));
 		setDataStream(new PowertrainDataStreamECU300(this));
+		setTroubleCode(new PowertrainTroubleCodeECU300(this, getDataStream()
+				.getLiveDataItems().get("ERF")));
 	}
 
 	@Override
@@ -223,7 +224,8 @@ public class PowertrainECU300 extends AbstractECU {
 			}
 
 			PowertrainVersion ver = new PowertrainVersion();
-			ver.model = "3Y07";
+			// ver.model = "3Y07";
+			ver.model = "";
 
 			Charset cs = Charset.forName("US-ASCII");
 			ByteBuffer bb = ByteBuffer.allocate(100);
@@ -232,12 +234,14 @@ public class PowertrainECU300 extends AbstractECU {
 				bb.put(rData[i]);
 			}
 			bb.flip();
-			
-			String temp = cs.decode(bb).toString();
-			String[] slip = temp.split("-");
 
-			ver.hardware = slip[0];
-			ver.software = slip[1];
+			// String temp = cs.decode(bb).toString();
+			// String[] slip = temp.split("-");
+
+			// ver.hardware = slip[0];
+			// ver.software = slip[1];
+			ver.hardware = "";
+			ver.software = cs.decode(bb).toString();
 
 			return ver;
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.util.SparseArray;
-
 import dnt.diag.channel.ChannelException;
+import dnt.diag.data.LiveDataItem;
 import dnt.diag.data.TroubleCodeItem;
 import dnt.diag.ecu.DiagException;
 import dnt.diag.ecu.TroubleCodeFunction;
@@ -64,6 +64,7 @@ public class PowertrainTroubleCodeECU300 extends TroubleCodeFunction {
 
 	private PowertrainModel model;
 	private String sys;
+	private LiveDataItem erfItem;
 
 	private void initCommands() {
 
@@ -162,7 +163,8 @@ public class PowertrainTroubleCodeECU300 extends TroubleCodeFunction {
 		}
 	}
 
-	public PowertrainTroubleCodeECU300(PowertrainECU300 ecu) {
+	public PowertrainTroubleCodeECU300(PowertrainECU300 ecu,
+			LiveDataItem erfItem) {
 		super(ecu.getDB(), ecu.getChannel(), ecu.getFormat());
 		this.model = ecu.getModel();
 
@@ -174,6 +176,7 @@ public class PowertrainTroubleCodeECU300 extends TroubleCodeFunction {
 			break;
 		}
 		initCommands();
+		this.erfItem = erfItem;
 	}
 
 	@Override
@@ -267,6 +270,24 @@ public class PowertrainTroubleCodeECU300 extends TroubleCodeFunction {
 	public void clear() {
 		try {
 			byte[] rData = new byte[100];
+
+			// Check engine status.
+			byte[] buff = erfItem.getEcuResponseBuff().getBuff();
+			byte[] cmd = erfItem.getFormattedCommand();
+			getChannel().sendAndRecv(cmd, 0, cmd.length, buff);
+
+			if (!PowertrainECU300.checkIfPositive(buff, cmd)) {
+				throw new DiagException(getDB().queryText(
+						"Checking Engine Status Fail", "Mikuni"));
+			}
+
+			erfItem.calcValue();
+
+			if (!erfItem.getValue().equals(getDB().queryText("Stopped", "System"))) {
+				throw new DiagException(getDB().queryText(
+						"Clear Trouble Code Fail Because ERF", "Mikuni"));
+			}
+
 			getChannel().sendAndRecv(failureHistoryClear1, 0,
 					failureHistoryClear1.length, rData);
 

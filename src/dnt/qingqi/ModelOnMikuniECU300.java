@@ -199,9 +199,10 @@ public class ModelOnMikuniECU300 extends AsyncTask<String, Void, Void> {
 								ecu.channelInit();
 
 								version = ecu.readVersion();
-								return String.format("%s\n%s\nV%s",
-										version.model, version.hardware,
-										version.software);
+//								return String.format("%s\n%s\nV%s",
+//										version.model, version.hardware,
+//										version.software);
+								return version.software;
 							} catch (DiagException ex) {
 								return ex.getMessage();
 							} catch (IOException ex) {

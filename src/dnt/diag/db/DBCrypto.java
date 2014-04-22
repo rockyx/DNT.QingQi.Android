@@ -27,8 +27,6 @@ final class DBCrypto {
 			(byte) 0x35, (byte) 0x74, (byte) 0x18, (byte) 0xB3, (byte) 0x51,
 			(byte) 0xA3, (byte) 0x87, (byte) 0x8E };
 
-	static HashMap<String, byte[]> encryptMap;
-	static HashMap<String, String> decryptMap;
 	static SecretKey aesKey;
 	static IvParameterSpec ips;
 	static Cipher decryptCipher;
@@ -36,9 +34,6 @@ final class DBCrypto {
 
 	static {
 		try {
-			encryptMap = new HashMap<String, byte[]>();
-			decryptMap = new HashMap<String, String>();
-
 			aesKey = new SecretKeySpec(AES_CBC_KEY, "AES");
 
 			ips = new IvParameterSpec(AES_CBC_IV);
@@ -108,30 +103,12 @@ final class DBCrypto {
 			throw new IllegalArgumentException("Plain Text");
 
 		try {
-			if (!encryptMap.containsKey(plain)) {
-				byte[] plainBytes = plain.getBytes("UTF-8");
-				encryptMap.put(plain, encrypt(plainBytes));
-			}
+			byte[] plainBytes = plain.getBytes("UTF-8");
+			return encrypt(plainBytes);
+
 		} catch (UnsupportedEncodingException e) {
 //			e.printStackTrace();
 			throw new CryptoException(e.getMessage());
 		}
-
-		return encryptMap.get(plain);
 	}
-
-	protected static byte[] getLanguage() {
-		return encrypt(Settings.language);
-	}
-
-	protected static String decrypt(String name, String cls, byte[] cipherBytes) {
-		String key = String.format("%s_%s_%s", name, Settings.language, cls);
-
-		if (!decryptMap.containsKey(key)) {
-			decryptMap.put(key, decryptToString(cipherBytes));
-		}
-
-		return decryptMap.get(key);
-	}
-
 }

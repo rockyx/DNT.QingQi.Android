@@ -11,7 +11,6 @@ import dnt.diag.Settings;
 import dnt.diag.data.LiveDataItem;
 import dnt.diag.data.LiveDataList;
 import dnt.diag.data.TroubleCodeItem;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -20,16 +19,15 @@ import android.database.sqlite.SQLiteDatabase;
 public final class VehicleDB {
 	static final char[] hexArray = "0123456789ABCDEF".toCharArray();
 	static final String DB_NAME = "sys.db";
-	static HashMap<String, String> stringMap;
+
+	HashMap<String, byte[]> encryptMap;
+	HashMap<String, String> stringMap;
+	HashMap<String, byte[]> commandMap;
 
 	private Context context;
 	private SQLiteDatabase db;
 	private char[] hexChars;
 	private StringBuilder queryTextBuilder;
-
-	static {
-		stringMap = new HashMap<String, String>();
-	}
 
 	private void copyDatabase() throws IOException {
 		InputStream istream = null;
@@ -67,6 +65,10 @@ public final class VehicleDB {
 			throw new DatabaseException(DB_NAME);
 		}
 
+		encryptMap = new HashMap<String, byte[]>();
+		stringMap = new HashMap<String, String>();
+		commandMap = new HashMap<String, byte[]>();
+
 		queryTextBuilder = new StringBuilder(1024);
 		hexChars = new char[2048];
 	}
@@ -86,12 +88,22 @@ public final class VehicleDB {
 		queryTextBuilder.append("'");
 	}
 
+	private byte[] encrypt(String plain) {
+		if (!encryptMap.containsKey(plain)) {
+			encryptMap.put(plain, DBCrypto.encrypt(plain));
+		}
+
+		return encryptMap.get(plain);
+	}
+
+	private byte[] getEncryptLang() {
+		return encrypt(Settings.language);
+	}
+
 	public String queryText(String name, String cls) {
 		String key = String.format("%s_%s_%s", name, cls, Settings.language);
 
 		if (!stringMap.containsKey(key)) {
-			byte[] enName = DBCrypto.encrypt(name);
-			byte[] enCls = DBCrypto.encrypt(cls);
 
 			queryTextBuilder.setLength(0);
 			queryTextBuilder.append("SELECT ");
@@ -100,11 +112,11 @@ public final class VehicleDB {
 			queryTextBuilder.append("Text ");
 			queryTextBuilder.append("WHERE ");
 			queryTextBuilder.append("Name=");
-			convertBinaryToString(enName);
+			convertBinaryToString(DBCrypto.encrypt(name));
 			queryTextBuilder.append(" AND Language=");
-			convertBinaryToString(DBCrypto.getLanguage());
+			convertBinaryToString(getEncryptLang());
 			queryTextBuilder.append(" AND Class=");
-			convertBinaryToString(enCls);
+			convertBinaryToString(DBCrypto.encrypt(cls));
 
 			Cursor cursor = null;
 
@@ -125,38 +137,40 @@ public final class VehicleDB {
 	}
 
 	public byte[] queryCommand(String name, String cls) {
-		byte[] enName = DBCrypto.encrypt(name);
-		byte[] enCls = DBCrypto.encrypt(cls);
 
-		queryTextBuilder.setLength(0);
-		queryTextBuilder.append("SELECT ");
-		queryTextBuilder.append("Command ");
-		queryTextBuilder.append("FROM ");
-		queryTextBuilder.append("Command ");
-		queryTextBuilder.append("WHERE ");
-		queryTextBuilder.append("Name=");
-		convertBinaryToString(enName);
-		queryTextBuilder.append(" AND Class=");
-		convertBinaryToString(enCls);
+		String key = String.format("%s_%s", name, cls);
 
-		Cursor cursor = null;
-		try {
-			cursor = db.rawQuery(queryTextBuilder.toString(), null);
-			cursor.moveToFirst();
-			byte[] cipherBytes = cursor.getBlob(0);
-			return DBCrypto.decryptToBytes(cipherBytes);
-		} catch (Exception ex) {
-			throw new DatabaseException(String.format(
-					"Query command fail name = %s, class = %s", name, cls));
-		} finally {
-			if (cursor != null)
-				cursor.close();
+		if (!commandMap.containsKey(key)) {
+			queryTextBuilder.setLength(0);
+			queryTextBuilder.append("SELECT ");
+			queryTextBuilder.append("Command ");
+			queryTextBuilder.append("FROM ");
+			queryTextBuilder.append("Command ");
+			queryTextBuilder.append("WHERE ");
+			queryTextBuilder.append("Name=");
+			convertBinaryToString(DBCrypto.encrypt(name));
+			queryTextBuilder.append(" AND Class=");
+			convertBinaryToString(DBCrypto.encrypt(cls));
+
+			Cursor cursor = null;
+			try {
+				cursor = db.rawQuery(queryTextBuilder.toString(), null);
+				cursor.moveToFirst();
+				byte[] cipherBytes = cursor.getBlob(0);
+				commandMap.put(key, DBCrypto.decryptToBytes(cipherBytes));
+			} catch (Exception ex) {
+				throw new DatabaseException(String.format(
+						"Query command fail name = %s, class = %s", name, cls));
+			} finally {
+				if (cursor != null)
+					cursor.close();
+			}
 		}
+		
+		return commandMap.get(key);
 	}
 
 	public TroubleCodeItem queryTroubleCode(String code, String cls) {
-		byte[] enCode = DBCrypto.encrypt(code);
-		byte[] enCls = DBCrypto.encrypt(cls);
 
 		queryTextBuilder.setLength(0);
 		queryTextBuilder.append("SELECT ");
@@ -166,11 +180,11 @@ public final class VehicleDB {
 		queryTextBuilder.append("TroubleCode ");
 		queryTextBuilder.append("WHERE ");
 		queryTextBuilder.append("Code=");
-		convertBinaryToString(enCode);
+		convertBinaryToString(DBCrypto.encrypt(code));
 		queryTextBuilder.append(" AND Language=");
-		convertBinaryToString(DBCrypto.getLanguage());
+		convertBinaryToString(getEncryptLang());
 		queryTextBuilder.append(" AND Class=");
-		convertBinaryToString(enCls);
+		convertBinaryToString(DBCrypto.encrypt(cls));
 
 		Cursor cursor = null;
 		try {
@@ -195,7 +209,6 @@ public final class VehicleDB {
 	}
 
 	public LiveDataList queryLiveData(String cls) {
-		byte[] enCls = DBCrypto.encrypt(cls);
 
 		queryTextBuilder.setLength(0);
 		queryTextBuilder.append("SELECT ");
@@ -211,10 +224,10 @@ public final class VehicleDB {
 		queryTextBuilder.append("LiveData ");
 		queryTextBuilder.append("WHERE ");
 		queryTextBuilder.append("Language=");
-		convertBinaryToString(DBCrypto.getLanguage());
+		convertBinaryToString(getEncryptLang());
 		queryTextBuilder.append(" AND ");
 		queryTextBuilder.append("Class=");
-		convertBinaryToString(enCls);
+		convertBinaryToString(DBCrypto.encrypt(cls));
 
 		Cursor cursor = null;
 

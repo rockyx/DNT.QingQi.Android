@@ -74,6 +74,9 @@ public class App extends Application {
 	public String _02F_BLongTermLearningValueReset;
 	public String DSVISCLearningValueSetting;
 	public String DSVISCLearningValueSettingSuccess;
+	public String CustomerID;
+	public String ManageNumber;
+	public String SoftwareVersion;
 
 	private VehicleDB db;
 	private Commbox commbox;
@@ -155,6 +158,9 @@ public class App extends Application {
 				"DSV ISC Learning Value Setting", "Mikuni");
 		DSVISCLearningValueSettingSuccess = queryText(
 				"DSV ISC Learning Value Reset Success", "Mikuni");
+		CustomerID = queryText("Customer ID", "QingQi");
+		ManageNumber = queryText("Manage Number", "QingQi");
+		SoftwareVersion = queryText("Software Version", "System");
 	}
 
 	public String queryText(String name, String cls) {

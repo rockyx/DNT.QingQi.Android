@@ -1101,7 +1101,6 @@ dnt.diag.attribute.Attribute$CanFrameType
 dnt.diag.attribute.Attribute$CanIDMode
 dnt.diag.channel.AbstractChannel:
     26:27:public varargs void startHeartbeat(dnt.diag.Timer,byte[])
-    30:31:protected void leftShiftBuff(byte[],int,int)
 dnt.diag.channel.Channel:
     public abstract void startHeartbeat(dnt.diag.Timer,byte[],int,int)
     public abstract void stopHeartbeat()
@@ -1316,7 +1315,6 @@ dnt.diag.db.CryptoException:
     private static final long serialVersionUID
 dnt.diag.db.DBCrypto:
     17:17:DBCrypto()
-    128:134:protected static java.lang.String decrypt(java.lang.String,java.lang.String,byte[])
 dnt.diag.db.DatabaseException:
     private static final long serialVersionUID
 dnt.diag.db.VehicleDB:
@@ -1353,7 +1351,7 @@ dnt.diag.formats.MikuniECU200Format:
     private static final byte HEAD_FORMAT
     26:29:public byte[] unpack(byte[],int,int)
 dnt.diag.formats.MikuniECU300Format:
-    33:36:public byte[] unpack(byte[],int,int)
+    33:37:public byte[] unpack(byte[],int,int)
 dnt.diag.io.NativeMethods:
     3:3:public NativeMethods()
     protected static native int getSignals(int)
@@ -1400,9 +1398,9 @@ dnt.diag.io.SerialPortStream:
     202:205:public void setBreakState(boolean)
 dnt.diag.io.SerialStream
 dnt.qingqi.App:
-    236:236:public int getWhich()
-    241:253:public void showList(android.content.Context,java.lang.String[],android.content.DialogInterface$OnClickListener)
-    83:83:static synthetic void access$0(dnt.qingqi.App,int)
+    242:242:public int getWhich()
+    247:259:public void showList(android.content.Context,java.lang.String[],android.content.DialogInterface$OnClickListener)
+    86:86:static synthetic void access$0(dnt.qingqi.App,int)
 dnt.qingqi.App$1
 dnt.qingqi.BuildConfig
 dnt.qingqi.Delegate

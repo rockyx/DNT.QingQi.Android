@@ -1484,6 +1484,7 @@ dnt.diag.channel.AbstractChannel -> dnt.diag.b.a:
     dnt.diag.commbox.Commbox commbox -> b
     dnt.diag.commbox.Commbox getCommbox() -> a
     dnt.diag.attribute.Attribute getAttribute() -> b
+    void leftShiftBuff(byte[],int,int) -> a
 dnt.diag.channel.Channel -> dnt.diag.b.b:
     void setByteTxInterval(dnt.diag.Timer) -> a
     void setFrameTxInterval(dnt.diag.Timer) -> b
@@ -1527,7 +1528,7 @@ dnt.diag.channel.ISO9141Channel -> dnt.diag.b.h:
     int lline -> b
     void startCommunicate() -> c
     boolean configLines() -> d
-    int singleUnpack(byte[],int,int) -> a
+    int singleUnpack(byte[],int,int) -> b
     int sendAndRecv(byte[],int,int,byte[]) -> a
     void setByteTxInterval(dnt.diag.Timer) -> a
     void setFrameTxInterval(dnt.diag.Timer) -> b
@@ -1729,28 +1730,29 @@ dnt.diag.db.CryptoException -> dnt.diag.e.a:
 dnt.diag.db.DBCrypto -> dnt.diag.e.b:
     byte[] AES_CBC_KEY -> a
     byte[] AES_CBC_IV -> b
-    java.util.HashMap encryptMap -> c
-    java.util.HashMap decryptMap -> d
-    javax.crypto.SecretKey aesKey -> e
-    javax.crypto.spec.IvParameterSpec ips -> f
-    javax.crypto.Cipher decryptCipher -> g
-    javax.crypto.Cipher encryptCipher -> h
+    javax.crypto.SecretKey aesKey -> c
+    javax.crypto.spec.IvParameterSpec ips -> d
+    javax.crypto.Cipher decryptCipher -> e
+    javax.crypto.Cipher encryptCipher -> f
     byte[] decryptToBytes(byte[]) -> a
     java.lang.String decryptToString(byte[]) -> b
     byte[] encrypt(byte[]) -> c
     byte[] encrypt(java.lang.String) -> a
-    byte[] getLanguage() -> a
 dnt.diag.db.DatabaseException -> dnt.diag.e.c:
 dnt.diag.db.VehicleDB -> dnt.diag.e.d:
     char[] hexArray -> a
-    java.util.HashMap stringMap -> b
-    android.content.Context context -> c
-    android.database.sqlite.SQLiteDatabase db -> d
-    char[] hexChars -> e
-    java.lang.StringBuilder queryTextBuilder -> f
+    java.util.HashMap encryptMap -> b
+    java.util.HashMap stringMap -> c
+    java.util.HashMap commandMap -> d
+    android.content.Context context -> e
+    android.database.sqlite.SQLiteDatabase db -> f
+    char[] hexChars -> g
+    java.lang.StringBuilder queryTextBuilder -> h
     void copyDatabase() -> a
     java.lang.String bytesToHex(byte[]) -> a
     void convertBinaryToString(byte[]) -> b
+    byte[] encrypt(java.lang.String) -> b
+    byte[] getEncryptLang() -> b
     java.lang.String queryText(java.lang.String,java.lang.String) -> a
     byte[] queryCommand(java.lang.String,java.lang.String) -> b
     dnt.diag.data.TroubleCodeItem queryTroubleCode(java.lang.String,java.lang.String) -> c
@@ -1982,7 +1984,7 @@ dnt.diag.ecu.mikuni.PowertrainECU300 -> dnt.diag.f.a.w:
     boolean checkIfPositive(byte[],byte[]) -> a
     dnt.diag.ecu.mikuni.PowertrainModel getModel() -> k
     void channelInit() -> j
-    void checkEngineStop() -> r
+    void checkEngineStop(dnt.diag.ecu.mikuni.PowertrainECU300) -> a
     void tpsIdleLearningValueSetting() -> l
     void longTermLearningValueReset() -> m
     void dsvISCLearningValueSetting() -> n
@@ -2030,11 +2032,11 @@ dnt.diag.ecu.mikuni.PowertrainTroubleCodeECU300 -> dnt.diag.f.a.aa:
     android.util.SparseArray failureCmds -> b
     android.util.SparseArray failureCalcs -> c
     byte[] failureHistoryPointer -> d
-    java.lang.String[] failureHistoryBufferName -> e
-    android.util.SparseArray failureHistoryBuffer -> f
-    byte[] failureHistoryClear1 -> g
-    byte[] failureHistoryClear2 -> h
-    byte[] failureHistoryClear3 -> i
+    android.util.SparseArray failureHistoryBuffer -> e
+    byte[] failureHistoryClear1 -> f
+    byte[] failureHistoryClear2 -> g
+    byte[] failureHistoryClear3 -> h
+    dnt.diag.ecu.mikuni.PowertrainECU300 ecu -> i
     dnt.diag.ecu.mikuni.PowertrainModel model -> j
     java.lang.String sys -> k
     int[] $SWITCH_TABLE$dnt$diag$ecu$mikuni$PowertrainModel -> l
@@ -2677,15 +2679,18 @@ dnt.qingqi.App -> dnt.qingqi.App:
     java.lang.String _02F_BLongTermLearningValueReset -> X
     java.lang.String DSVISCLearningValueSetting -> Y
     java.lang.String DSVISCLearningValueSettingSuccess -> Z
-    dnt.diag.db.VehicleDB db -> aa
-    dnt.diag.commbox.Commbox commbox -> ab
-    android.app.ProgressDialog status -> ac
-    android.app.AlertDialog fatal -> ad
-    android.app.AlertDialog list -> ae
-    int which -> af
-    dnt.diag.ecu.AbstractECU ecu -> ag
-    java.util.List menuHistory -> ah
-    java.io.BufferedWriter writer -> ai
+    java.lang.String CustomerID -> aa
+    java.lang.String ManageNumber -> ab
+    java.lang.String SoftwareVersion -> ac
+    dnt.diag.db.VehicleDB db -> ad
+    dnt.diag.commbox.Commbox commbox -> ae
+    android.app.ProgressDialog status -> af
+    android.app.AlertDialog fatal -> ag
+    android.app.AlertDialog list -> ah
+    int which -> ai
+    dnt.diag.ecu.AbstractECU ecu -> aj
+    java.util.List menuHistory -> ak
+    java.io.BufferedWriter writer -> al
     void setResources(dnt.diag.db.VehicleDB,dnt.diag.commbox.Commbox) -> a
     java.lang.String queryText(java.lang.String,java.lang.String) -> a
     dnt.diag.db.VehicleDB getDB() -> a

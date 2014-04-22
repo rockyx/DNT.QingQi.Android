@@ -18,53 +18,32 @@ import dnt.diag.ecu.DiagException;
 import dnt.diag.formats.MikuniECU300Format;
 
 public class PowertrainECU300 extends AbstractECU {
-	private static byte[] startConnection;
-	private static byte[] tpsIdleLearningValueSetting;
-	private static byte[] longTermLearningValueReset;
-	private static byte[] dsvISCLearningValueSetting;
-	private static byte[] readEcuVersion;
-
-	static {
-		startConnection = null;
-		tpsIdleLearningValueSetting = null;
-		longTermLearningValueReset = null;
-		dsvISCLearningValueSetting = null;
-		readEcuVersion = null;
-	}
+	private byte[] startConnection;
+	private byte[] tpsIdleLearningValueSetting;
+	private byte[] longTermLearningValueReset;
+	private byte[] dsvISCLearningValueSetting;
+	private byte[] readEcuVersion;
 
 	private Attribute attr;
 	private PowertrainModel model;
 
 	private void initCommands() {
-		if (startConnection == null) {
-			startConnection = getFormat().pack(
-					getDB().queryCommand("Start Connection", "Mikuni ECU300"));
-		}
+		startConnection = getFormat().pack(
+				getDB().queryCommand("Start Connection", "Mikuni ECU300"));
 
-		if (tpsIdleLearningValueSetting == null) {
-			tpsIdleLearningValueSetting = getFormat().pack(
-					getDB().queryCommand("TPS Idle Learning Value Setting",
-							"Mikuni ECU300"));
-		}
-
-		if (longTermLearningValueReset == null) {
-			longTermLearningValueReset = getFormat().pack(
-					getDB().queryCommand(
-							"02 Feed Back Long Term Learning Value Reset",
-							"Mikuni ECU300"));
-		}
-
-		if (dsvISCLearningValueSetting == null) {
-			dsvISCLearningValueSetting = getFormat().pack(
-					getDB().queryCommand("DSV ISC Learning Value Reset",
-							"Mikuni ECU300"));
-		}
-
-		if (readEcuVersion == null) {
-			readEcuVersion = getFormat().pack(
-					getDB().queryCommand("ECU Version Information",
-							"Mikuni ECU300"));
-		}
+		tpsIdleLearningValueSetting = getFormat().pack(
+				getDB().queryCommand("TPS Idle Learning Value Setting",
+						"Mikuni ECU300"));
+		longTermLearningValueReset = getFormat().pack(
+				getDB().queryCommand(
+						"02 Feed Back Long Term Learning Value Reset",
+						"Mikuni ECU300"));
+		dsvISCLearningValueSetting = getFormat().pack(
+				getDB().queryCommand("DSV ISC Learning Value Reset",
+						"Mikuni ECU300"));
+		readEcuVersion = getFormat()
+				.pack(getDB().queryCommand("ECU Version Information",
+						"Mikuni ECU300"));
 	}
 
 	public static boolean checkIfPositive(byte[] rData, byte[] cmd) {
@@ -101,8 +80,7 @@ public class PowertrainECU300 extends AbstractECU {
 		initCommands();
 
 		setDataStream(new PowertrainDataStreamECU300(this));
-		setTroubleCode(new PowertrainTroubleCodeECU300(this, getDataStream()
-				.getLiveDataItems().get("ERF")));
+		setTroubleCode(new PowertrainTroubleCodeECU300(this));
 	}
 
 	@Override
@@ -125,24 +103,26 @@ public class PowertrainECU300 extends AbstractECU {
 		}
 	}
 
-	private void checkEngineStop() {
+	public static void checkEngineStop(PowertrainECU300 ecu) {
 
 		try {
-			LiveDataItem item = getDataStream().getLiveDataItems().get("ERF");
+			LiveDataItem item = ecu.getDataStream().getLiveDataItems()
+					.get("ERF");
 			byte[] buff = item.getEcuResponseBuff().getBuff();
 			byte[] cmd = item.getFormattedCommand();
-			getChannel().sendAndRecv(cmd, 0, cmd.length, buff);
+			ecu.getChannel().sendAndRecv(cmd, 0, cmd.length, buff);
 
 			if (!checkIfPositive(buff, cmd)) {
-				throw new DiagException(getDB().queryText(
+				throw new DiagException(ecu.getDB().queryText(
 						"Checking Engine Status Fail", "Mikuni"));
 			}
 
 			item.calcValue();
 
-			if (!item.getValue().equals(getDB().queryText("Stopped", "System"))) {
-				throw new DiagException(getDB().queryText(
-						"TPS Failure Because ERF", "Mikuni"));
+			if (!item.getValue().equals(
+					ecu.getDB().queryText("Stopped", "System"))) {
+				throw new DiagException(ecu.getDB().queryText(
+						"Function Fail Because ERF", "Mikuni"));
 			}
 		} catch (ChannelException e) {
 			throw new DiagException(e.getMessage());
@@ -156,10 +136,10 @@ public class PowertrainECU300 extends AbstractECU {
 
 			if (!items.isEmpty()) {
 				throw new DiagException(getDB().queryText(
-						"TPS Failure Because TroubleCodes", "Mikuni"));
+						"Function Fail Because TroubleCodes", "Mikuni"));
 			}
 
-			checkEngineStop();
+			checkEngineStop(this);
 
 			byte[] rData = new byte[100];
 
@@ -176,7 +156,7 @@ public class PowertrainECU300 extends AbstractECU {
 
 	public void longTermLearningValueReset() {
 		try {
-			checkEngineStop();
+			checkEngineStop(this);
 
 			byte[] rData = new byte[100];
 
@@ -195,7 +175,7 @@ public class PowertrainECU300 extends AbstractECU {
 
 	public void dsvISCLearningValueSetting() {
 		try {
-			checkEngineStop();
+			checkEngineStop(this);
 
 			byte[] rData = new byte[100];
 
@@ -225,7 +205,7 @@ public class PowertrainECU300 extends AbstractECU {
 
 			PowertrainVersion ver = new PowertrainVersion();
 			// ver.model = "3Y07";
-			ver.model = "";
+			ver.model = "ECU300"; // Customer ID
 
 			Charset cs = Charset.forName("US-ASCII");
 			ByteBuffer bb = ByteBuffer.allocate(100);
@@ -235,13 +215,13 @@ public class PowertrainECU300 extends AbstractECU {
 			}
 			bb.flip();
 
-			// String temp = cs.decode(bb).toString();
-			// String[] slip = temp.split("-");
+			String temp = cs.decode(bb).toString();
+			String[] slip = temp.split("-");
 
-			// ver.hardware = slip[0];
-			// ver.software = slip[1];
-			ver.hardware = "";
-			ver.software = cs.decode(bb).toString();
+			ver.hardware = slip[0]; // Manage Number
+			ver.software = slip[1]; // Software version
+//			ver.hardware = "";
+//			ver.software = cs.decode(bb).toString();
 
 			return ver;
 

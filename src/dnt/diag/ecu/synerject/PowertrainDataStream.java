@@ -67,10 +67,10 @@ public class PowertrainDataStream extends DataStreamFunction {
 
 			lds.get("CRASH").setEnabled(false);
 			lds.get("DIST_ACT_MIL").setEnabled(false);
-			lds.get("ISA_AD_T_DLY").setEnabled(false);
-			lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
-			lds.get("ISA_CTL_IS").setEnabled(false);
-			lds.get("ISC_ISA_AD_MV").setEnabled(false);
+//			lds.get("ISA_AD_T_DLY").setEnabled(false);
+//			lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
+//			lds.get("ISA_CTL_IS").setEnabled(false);
+//			lds.get("ISC_ISA_AD_MV").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM_ACT").setEnabled(false);
 			lds.get("LV_IMMO_PROG").setEnabled(false);
@@ -98,10 +98,10 @@ public class PowertrainDataStream extends DataStreamFunction {
 
 			lds.get("CRASH").setEnabled(false);
 			lds.get("DIST_ACT_MIL").setEnabled(false);
-			lds.get("ISA_AD_T_DLY").setEnabled(false);
-			lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
-			lds.get("ISA_CTL_IS").setEnabled(false);
-			lds.get("ISC_ISA_AD_MV").setEnabled(false);
+//			lds.get("ISA_AD_T_DLY").setEnabled(false);
+//			lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
+//			lds.get("ISA_CTL_IS").setEnabled(false);
+//			lds.get("ISC_ISA_AD_MV").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM_ACT").setEnabled(false);
 			lds.get("LV_IMMO_PROG").setEnabled(false);

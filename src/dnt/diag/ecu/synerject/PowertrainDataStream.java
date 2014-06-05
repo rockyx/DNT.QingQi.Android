@@ -67,10 +67,10 @@ public class PowertrainDataStream extends DataStreamFunction {
 
 			lds.get("CRASH").setEnabled(false);
 			lds.get("DIST_ACT_MIL").setEnabled(false);
-//			lds.get("ISA_AD_T_DLY").setEnabled(false);
-//			lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
-//			lds.get("ISA_CTL_IS").setEnabled(false);
-//			lds.get("ISC_ISA_AD_MV").setEnabled(false);
+			// lds.get("ISA_AD_T_DLY").setEnabled(false);
+			// lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
+			// lds.get("ISA_CTL_IS").setEnabled(false);
+			// lds.get("ISC_ISA_AD_MV").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM_ACT").setEnabled(false);
 			lds.get("LV_IMMO_PROG").setEnabled(false);
@@ -98,10 +98,10 @@ public class PowertrainDataStream extends DataStreamFunction {
 
 			lds.get("CRASH").setEnabled(false);
 			lds.get("DIST_ACT_MIL").setEnabled(false);
-//			lds.get("ISA_AD_T_DLY").setEnabled(false);
-//			lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
-//			lds.get("ISA_CTL_IS").setEnabled(false);
-//			lds.get("ISC_ISA_AD_MV").setEnabled(false);
+			// lds.get("ISA_AD_T_DLY").setEnabled(false);
+			// lds.get("ISA_ANG_DUR_MEC").setEnabled(false);
+			// lds.get("ISA_CTL_IS").setEnabled(false);
+			// lds.get("ISC_ISA_AD_MV").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM").setEnabled(false);
 			lds.get("LV_EOL_EFP_PRIM_ACT").setEnabled(false);
 			lds.get("LV_IMMO_PROG").setEnabled(false);
@@ -406,7 +406,7 @@ public class PowertrainDataStream extends DataStreamFunction {
 			@Override
 			protected String calc() {
 				// ISA_ANG_DUR_MEC 2 0...600H 0...720.00 15/32
-				double value = ((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF)) * 15 - 30;
+				double value = ((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF)) * 15 / 30;
 				return String.format(Locale.getDefault(), "%.4f", value);
 			}
 
@@ -936,12 +936,14 @@ public class PowertrainDataStream extends DataStreamFunction {
 		item = lds.get("MFF_AD_FAC_MMV_REL");
 		item.setCalc(new LiveDataItemCalc(item) {
 			private byte[] buff = new byte[2];
+
 			@Override
 			protected String calc() {
 				// MFF_AD_FAC_MMV_REL 2 0...FFFFH -32...31.99902 1/1024
 				double value = ((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF)) / 1024 - 32;
 				return String.format(Locale.getDefault(), "%.4f", value);
 			}
+
 			@Override
 			protected boolean dataChanged() {
 				if ((buff[0] != buffer.get(35)) || (buff[1] != buffer.get(36))) {
@@ -956,12 +958,14 @@ public class PowertrainDataStream extends DataStreamFunction {
 		item = lds.get("MFF_AD_ADD_MMV");
 		item.setCalc(new LiveDataItemCalc(item) {
 			private byte[] buff = new byte[2];
+
 			@Override
 			protected String calc() {
 				// MFF_AD_ADD_MMV 2 0...FFFFH -128...127.9960 1/256
 				double value = ((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF)) / 256 - 128;
 				return String.format(Locale.getDefault(), "%.4f", value);
 			}
+
 			@Override
 			protected boolean dataChanged() {
 				if ((buff[0] != buffer.get(37)) || (buff[1] != buffer.get(38))) {
@@ -976,12 +980,14 @@ public class PowertrainDataStream extends DataStreamFunction {
 		item = lds.get("MFF_AD_FAC_MMV");
 		item.setCalc(new LiveDataItemCalc(item) {
 			private byte[] buff = new byte[2];
+
 			@Override
 			protected String calc() {
 				// MFF_AD_FAC_MMV 2. 0...FFFFH -32...32.99902 1/1024
 				double value = ((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF)) / 1024 - 32;
 				return String.format(Locale.getDefault(), "%.4f", value);
 			}
+
 			@Override
 			protected boolean dataChanged() {
 				if ((buff[0] != buffer.get(39)) || (buff[1] != buffer.get(40))) {
@@ -996,12 +1002,14 @@ public class PowertrainDataStream extends DataStreamFunction {
 		item = lds.get("MFF_INJ_HOM");
 		item.setCalc(new LiveDataItemCalc(item) {
 			private byte[] buff = new byte[2];
+
 			@Override
 			protected String calc() {
 				// MFF_INJ_HOM 2 0...FFFFH 0...255.9960 1/256
 				double value = ((buff[0] & 0xFF) * 256 + (buff[1] & 0xFF)) / 256;
 				return String.format(Locale.getDefault(), "%.4f", value);
 			}
+
 			@Override
 			protected boolean dataChanged() {
 				if ((buff[0] != buffer.get(41)) || (buff[1] != buffer.get(42))) {
@@ -1016,12 +1024,14 @@ public class PowertrainDataStream extends DataStreamFunction {
 		item = lds.get("MFF_WUP_COR");
 		item.setCalc(new LiveDataItemCalc(item) {
 			private byte buff = 0;
+
 			@Override
 			protected String calc() {
 				// MFF_WUP_COR 1 0...FFH 0...0.9960 1/256
 				double value = (buff & 0xFF) / 256;
 				return String.format(Locale.getDefault(), "%.4f", value);
 			}
+
 			@Override
 			protected boolean dataChanged() {
 				if (buff != buffer.get(43)) {

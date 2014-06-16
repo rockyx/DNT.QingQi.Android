@@ -175,6 +175,7 @@ public class App extends Application {
 		if (Settings.debug) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(android.os.Environment.getExternalStorageDirectory());
+//			sb.append(this.getFilesDir());
 			sb.append("/");
 			for (String menu : menuHistory) {
 				sb.append(menu);

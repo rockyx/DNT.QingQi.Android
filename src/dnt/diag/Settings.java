@@ -13,6 +13,7 @@ public final class Settings {
 	static {
 		language = zh_CN;
 		device = TOMIC_DEVICE_V1;
-		debug = false;
+//		debug = false;
+		debug = true;
 	}
 }

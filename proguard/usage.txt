@@ -1398,8 +1398,8 @@ dnt.diag.io.SerialPortStream:
     202:205:public void setBreakState(boolean)
 dnt.diag.io.SerialStream
 dnt.qingqi.App:
-    242:242:public int getWhich()
-    247:259:public void showList(android.content.Context,java.lang.String[],android.content.DialogInterface$OnClickListener)
+    243:243:public int getWhich()
+    248:260:public void showList(android.content.Context,java.lang.String[],android.content.DialogInterface$OnClickListener)
     86:86:static synthetic void access$0(dnt.qingqi.App,int)
 dnt.qingqi.App$1
 dnt.qingqi.BuildConfig
